@@ -1,13 +1,14 @@
 package com.letsrace.game;
 
+import static com.letsrace.game.FRConstants.PIXELS_PER_UNIT;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import static com.letsrace.game.FRConstants.PIXELS_PER_UNIT;
+import com.letsrace.game.map.OrthogonalTiledMapRenderer;
 
 public class FRGameRenderer {
 	FRGameWorld worldRef;
@@ -16,13 +17,13 @@ public class FRGameRenderer {
 	SpriteBatch batch;
 	TiledMapRenderer tiledMapRenderer;
 
-	public FRGameRenderer(SpriteBatch batch,FRGameWorld world){
+	public FRGameRenderer(FRGameWorld world){
 		worldRef = world;
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 		this.cam = new OrthographicCamera(PIXELS_PER_UNIT*20,PIXELS_PER_UNIT*20*h/w);
 		cam.position.set(cam.viewportWidth/2f,cam.viewportHeight/2f,0);
-		this.batch = batch;
+		this.batch = new SpriteBatch();
 		debugRenderer=new Box2DDebugRenderer();
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(world.mapHandler.tiledMap);
 	}

@@ -5,14 +5,16 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public abstract class FRRaceCar {
 	public Car carCore;
-
+	
 	public FRRaceCar(World world, float width, float length, Vector2 position,
-			float angle, float power, float maxSteerAngle, float maxSpeed) {
+			float angle, float power, float maxSteerAngle, float maxSpeed, String carmodel) {
 		carCore = new Car(world, width, length, position, angle, power,
-				maxSteerAngle, maxSpeed);
+				maxSteerAngle, maxSpeed, carmodel);
 	}
 
 	public void update(float delta) {
 		carCore.update(delta);
 	}
+	
+	public abstract void renderNormalState();
 }

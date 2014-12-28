@@ -32,10 +32,10 @@ public class FRCarKeyboardInputHandler extends InputAdapter{
 
 	public boolean keyUp(int keycode) {
 		if (keycode == Input.Keys.DPAD_UP) {
-			carRef.accelerate = Accel.NONE;
+			carRef.accelerate = Accel.ACCELERATE;
 			return true;
 		} else if (keycode == Input.Keys.DPAD_DOWN) {
-			carRef.accelerate = Accel.NONE;
+			carRef.accelerate = Accel.ACCELERATE;
 			return true;
 		} else if (keycode == Input.Keys.DPAD_LEFT) {
 			carRef.steer = Steer.NONE;

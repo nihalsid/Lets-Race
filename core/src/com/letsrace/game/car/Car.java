@@ -20,6 +20,7 @@ public class Car {
 	public List<Wheel> wheels;
 	Vector2 position;
 	Vector2 origin;
+
 	public enum Steer {
 		NONE, LEFT, RIGHT
 	};
@@ -29,20 +30,22 @@ public class Car {
 	};
 
 	public Car(World world, float width, float length, Vector2 position,
-			float angle, float power, float maxSteerAngle, float maxSpeed) {
+			float angle, float power, float maxSteerAngle, float maxSpeed,
+			String jsonFilePrefix) {
 		super();
 		this.steer = Steer.NONE;
-		this.accelerate = Accel.NONE;
+		this.accelerate = Accel.ACCELERATE;
 		this.width = width;
 		this.length = length;
 		this.angle = angle;
 		this.maxSteerAngle = maxSteerAngle;
 		this.maxSpeed = maxSpeed;
-		this.maxRevSpeed =maxSpeed/2;
+		this.maxRevSpeed = maxSpeed / 2;
 		this.power = power;
 		this.wheelAngle = 0;
-		this.position=position;
-		BodyEditorLoader loader =new BodyEditorLoader(Gdx.files.internal("hummer-normal.json"));
+		this.position = position;
+		BodyEditorLoader loader = new BodyEditorLoader(
+				Gdx.files.internal(jsonFilePrefix + "-normal.json"));
 		// init body
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -50,7 +53,6 @@ public class Car {
 		bodyDef.angle = angle;
 		this.body = world.createBody(bodyDef);
 		origin = loader.getOrigin("Name", width);
-		System.out.println("A="+origin);
 		// init shape
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.density = 1.0f;
@@ -62,16 +64,16 @@ public class Car {
 		loader.attachFixture(this.body, "Name", fixtureDef, this.width);
 		// initialize wheels
 		this.wheels = new ArrayList<Wheel>();
-		this.wheels.add(new Wheel(world, this,this.width, false,
-				false, WheelType.BOTTOM_LEFT)); // top left
-		
-		this.wheels.add(new Wheel(world, this,this.width, false,
-				false, WheelType.BOTTOM_RIGHT)); // top right
-		
-		this.wheels.add(new Wheel(world, this, this.width, true,
-				true, WheelType.TOP_LEFT)); // back left
-		this.wheels.add(new Wheel(world, this, this.width, true,
-				true, WheelType.TOP_RIGHT)); // back right
+		this.wheels.add(new Wheel(world, this, this.width, false, false,
+				jsonFilePrefix, WheelType.BOTTOM_LEFT)); // top left
+
+		this.wheels.add(new Wheel(world, this, this.width, false, false,
+				jsonFilePrefix, WheelType.BOTTOM_RIGHT)); // top right
+
+		this.wheels.add(new Wheel(world, this, this.width, true, true,
+				jsonFilePrefix, WheelType.TOP_LEFT)); // back left
+		this.wheels.add(new Wheel(world, this, this.width, true, true,
+				jsonFilePrefix, WheelType.TOP_RIGHT)); // back right
 	}
 
 	public List<Wheel> getPoweredWheels() {
@@ -155,8 +157,9 @@ public class Car {
 		}
 
 		// 3. APPLY FORCE TO WHEELS
-		Vector2 baseVector=new Vector2(0, 0); // vector pointing in the direction force will be
-							// applied to a wheel ; relative to the wheel.
+		Vector2 baseVector = new Vector2(0, 0); // vector pointing in the
+												// direction force will be
+		// applied to a wheel ; relative to the wheel.
 
 		// if accelerator is pressed down and speed limit has not been reached,
 		// go forwards
@@ -165,11 +168,11 @@ public class Car {
 			baseVector = new Vector2(0, 1);
 		} else if (this.accelerate == Accel.BRAKE) {
 			// braking, but still moving forwards - increased force
-			if (this.getLocalVelocity().y > 0){
+			if (this.getLocalVelocity().y > 0) {
 				baseVector = new Vector2(0f, -1.3f);
 			}
 			// going in reverse - less force
-			else if((this.getSpeedKMH() < this.maxRevSpeed))
+			else if ((this.getSpeedKMH() < this.maxRevSpeed))
 				baseVector = new Vector2(0f, -0.7f);
 		} else if (this.accelerate == Accel.NONE) {
 			// slow down if not accelerating

@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.PrismaticJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
@@ -20,28 +19,25 @@ public class Wheel {
 	public static final float PIXELS_PER_METER = 60.0f;
 
 	public Car car;// car this wheel belongs to
-	private float width; // width in meters
-	private float length; // length in meters
 	public boolean revolving; // does this wheel revolve when steering?
 	public boolean powered; // is this wheel powered?
 	public Body body;
 
 	public Wheel(World world, Car car, float scale,
-			boolean revolving, boolean powered, WheelType wheelType) {
+			boolean revolving, boolean powered, String jsonFilePrefix, WheelType wheelType) {
 		super();
 		this.car = car;
-		this.width = scale;
 		this.revolving = revolving;
 		this.powered = powered;
 		String wheelFile=null;
 		switch (wheelType) {
-		case BOTTOM_LEFT:wheelFile="hummer-wheel-bot-left.json";
+		case BOTTOM_LEFT:wheelFile=jsonFilePrefix+"-wheel-bot-left.json";
 			break;
-		case BOTTOM_RIGHT:wheelFile="hummer-wheel-bot-right.json";
+		case BOTTOM_RIGHT:wheelFile=jsonFilePrefix+"-wheel-bot-right.json";
 			break;
-		case TOP_LEFT:wheelFile="hummer-wheel-top-left.json";
+		case TOP_LEFT:wheelFile=jsonFilePrefix+"-wheel-top-left.json";
 			break;
-		case TOP_RIGHT:wheelFile="hummer-wheel-top-right.json";
+		case TOP_RIGHT:wheelFile=jsonFilePrefix+"-wheel-top-right.json";
 			break;
 		}
 		BodyEditorLoader loader = new BodyEditorLoader(
@@ -49,8 +45,7 @@ public class Wheel {
 		// init body
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.DynamicBody;
-		Vector2 origin = loader.getOrigin("Name", width);
-		System.out.println("B=" + origin);
+		Vector2 origin = loader.getOrigin("Name", scale);
 		bodyDef.position.set(car.body.getWorldPoint(origin.sub(car.origin)));
 		bodyDef.angle = car.body.getAngle();
 		this.body = world.createBody(bodyDef);
@@ -61,7 +56,7 @@ public class Wheel {
 		fixtureDef.isSensor = true; // wheel does not participate in collision
 									// calculations: resulting complications are
 									// unnecessary
-		loader.attachFixture(this.body, "Name", fixtureDef, this.width);
+		loader.attachFixture(this.body, "Name", fixtureDef, scale);
 
 		// create joint to connect wheel to body
 		if (this.revolving) {

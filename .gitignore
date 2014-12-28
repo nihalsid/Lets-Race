@@ -28,7 +28,7 @@ android/gen/
 *.iml
 out/
 com_crashlytics_export_strings.xml
-
+android/res/values/ids.xml
 ## Eclipse
 .classpath
 .project

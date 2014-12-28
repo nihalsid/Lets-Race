@@ -1,0 +1,40 @@
+
+ui-atlas.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+wait-screen-back
+  rotate: false
+  xy: 1, 199
+  size: 493, 815
+  orig: 493, 815
+  offset: 0, 0
+  index: -1
+menu-back
+  rotate: false
+  xy: 496, 209
+  size: 483, 805
+  orig: 483, 805
+  offset: 0, 0
+  index: -1
+button-up
+  rotate: false
+  xy: 1, 109
+  size: 288, 88
+  orig: 288, 88
+  offset: 0, 0
+  index: -1
+button-down
+  rotate: false
+  xy: 1, 20
+  size: 288, 87
+  orig: 288, 87
+  offset: 0, 0
+  index: -1
+wait-screen-steer
+  rotate: false
+  xy: 496, 1
+  size: 207, 206
+  orig: 207, 206
+  offset: 0, 0
+  index: -1
