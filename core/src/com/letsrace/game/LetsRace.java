@@ -1,14 +1,15 @@
 package com.letsrace.game;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.google.android.gms.games.multiplayer.Participant;
 import com.letsrace.game.FRConstants.GameState;
+import com.letsrace.game.network.FRGameClient;
 import com.letsrace.game.network.FRGoogleServices;
 import com.letsrace.game.screen.FRGameScreen;
 import com.letsrace.game.screen.FRMenuScreen;
@@ -21,28 +22,28 @@ public class LetsRace extends Game {
 	public BitmapFont font;
 	public FRGoogleServices googleServices;
 	public TextureAtlas textureAtlas;
-
+	public HashMap<String, Integer> playerNumber;
+	public int myPlayerNo;
+	public FRGameClient client;
+	
 	public LetsRace(FRGoogleServices services) {
 		googleServices = services;
+		playerNumber = new HashMap<String, Integer>();
 	}
-	
-	public void decideOnServerAndStart(){
-		ArrayList<Participant> participants = googleServices.getParticipants();
-		int serverCandidate = Integer.MIN_VALUE;
-		for (Participant p : participants){
-			if(serverCandidate<p.getPlayer().getPlayerId().hashCode()){
-				serverCandidate = p.getPlayer().getPlayerId().hashCode();
-			}
-			else if(serverCandidate==p.getPlayer().getPlayerId().hashCode()){
-				Gdx.app.log(FRConstants.TAG, "Server deciding logic failed, hashed to same value");
-			}
+
+	public void decideOnServerAndStart() {
+		String[] participants = (String[]) googleServices.getParticipantIds().toArray();
+		Arrays.sort(participants);
+		if (participants[0] == googleServices.getMyId())
+			Gdx.app.log(FRConstants.TAG, "I am the server");
+		int ctr = 0;
+		for (String s : participants) {
+			playerNumber.put(s, ctr++);
 		}
-		if (googleServices.getMyId().hashCode() == serverCandidate){
-			Gdx.app.log(FRConstants.TAG, "I am the server");	
-		}
+		myPlayerNo = playerNumber.get(googleServices.getMyId());
 		Gdx.app.log(FRConstants.TAG, "I am not the server");
 	}
-	
+
 	@Override
 	public void create() {
 		batch = new SpriteBatch();

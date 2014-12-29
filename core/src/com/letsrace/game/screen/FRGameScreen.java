@@ -9,12 +9,12 @@ import com.letsrace.game.LetsRace;
 
 public class FRGameScreen extends ScreenAdapter{
 	public LetsRace gameRef;
-	public FRGameWorld gameWorld;
 	public FRGameRenderer renderer;
+	public FRGameWorld gameWorldRef;
 	public FRGameScreen(LetsRace letsRace) {
 		this.gameRef = letsRace;
-		gameWorld = new FRGameWorld();
-		renderer = new FRGameRenderer(gameWorld);
+		gameWorldRef = gameRef.client.gameWorld;
+		renderer = new FRGameRenderer(gameWorldRef);
 	}
 	
 	@Override
@@ -30,7 +30,7 @@ public class FRGameScreen extends ScreenAdapter{
 	}
 
 	private void update(float delta) {
-		gameWorld.update(delta);
+		gameWorldRef.update(delta);
 	}
 
 	@Override

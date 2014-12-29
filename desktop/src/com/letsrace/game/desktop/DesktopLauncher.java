@@ -7,7 +7,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
-import com.google.android.gms.games.multiplayer.Participant;
 import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.network.FRGoogleServices;
@@ -41,13 +40,13 @@ public class DesktopLauncher implements FRGoogleServices{
 	}
 
 	@Override
-	public ArrayList<Participant> getParticipants() {
+	public String getMyId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String getMyId() {
+	public ArrayList<String> getParticipantIds() {
 		// TODO Auto-generated method stub
 		return null;
 	}

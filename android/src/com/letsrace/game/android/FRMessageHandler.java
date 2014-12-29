@@ -31,9 +31,9 @@ public class FRMessageHandler implements RealTimeMessageReceivedListener {
 		byte[] buf = rtm.getMessageData();
 		Log.d(AndroidLauncher.TAG, "Message received: " + Arrays.toString(buf));
 		if ((buf[0] & TO_SERVER) == TO_SERVER)
-			serverListener.onMessageRecieved(buf);
+			serverListener.onMessageRecieved(buf, rtm.getSenderParticipantId());
 		else
-			clientListener.onMessageRecieved(buf);
+			clientListener.onMessageRecieved(buf, rtm.getSenderParticipantId());
 	}
 
 }

@@ -67,8 +67,8 @@ public class AndroidLauncher extends AndroidApplication implements
 
 	// Room ID where the currently active game is taking place; null if we're
 	// not playing.
-	String mRoomId = null;
-
+	Room room;
+	
 	// Are we playing in multiplayer mode?
 	boolean mMultiplayer = false;
 
@@ -321,9 +321,9 @@ public class AndroidLauncher extends AndroidApplication implements
 	// Leave the room.
 	void leaveRoom() {
 		Log.d(TAG, "Leaving room.");
-		if (mRoomId != null) {
-			Games.RealTimeMultiplayer.leave(mGoogleApiClient, this, mRoomId);
-			mRoomId = null;
+		if (room != null) {
+			Games.RealTimeMultiplayer.leave(mGoogleApiClient, this, room.getRoomId());
+			room = null;
 		}
 	}
 
@@ -425,13 +425,13 @@ public class AndroidLauncher extends AndroidApplication implements
 		Log.d(TAG, "onConnectedToRoom.");
 
 		// get room ID, participants and my ID:
-		mRoomId = room.getRoomId();
+		this.room = room;
 		mParticipants = room.getParticipants();
 		mMyId = room.getParticipantId(Games.Players
 				.getCurrentPlayerId(mGoogleApiClient));
 
 		// print out the list of participants (for debug purposes)
-		Log.d(TAG, "Room ID: " + mRoomId);
+		Log.d(TAG, "Room ID: " + room.getRoomId());
 		Log.d(TAG, "My ID " + mMyId);
 		Log.d(TAG, "<< CONNECTED TO ROOM >>");
 	}
@@ -451,7 +451,7 @@ public class AndroidLauncher extends AndroidApplication implements
 	// screen.
 	@Override
 	public void onDisconnectedFromRoom(Room room) {
-		mRoomId = null;
+		room = null;
 		showGameError();
 	}
 
@@ -564,8 +564,8 @@ public class AndroidLauncher extends AndroidApplication implements
 		}
 	}
 	
-	public ArrayList<Participant> getParticipants(){
-		return mParticipants;
+	public ArrayList<String> getParticipantIds(){
+		return room.getParticipantIds();
 	}
 	
 	public String getMyId(){
