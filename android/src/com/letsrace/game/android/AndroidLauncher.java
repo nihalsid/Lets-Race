@@ -68,7 +68,7 @@ public class AndroidLauncher extends AndroidApplication implements
 	// Room ID where the currently active game is taking place; null if we're
 	// not playing.
 	Room room;
-	
+
 	// Are we playing in multiplayer mode?
 	boolean mMultiplayer = false;
 
@@ -84,7 +84,7 @@ public class AndroidLauncher extends AndroidApplication implements
 
 	// Message handler
 	FRMessageHandler messageHandler;
-	
+
 	LetsRace game;
 
 	@Override
@@ -188,13 +188,14 @@ public class AndroidLauncher extends AndroidApplication implements
 			} else {
 				OnClickListener listener = new OnClickListener() {
 					Activity parentActivity = AndroidLauncher.this;
+
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						parentActivity.finish();
 					}
 				};
-				BaseGameUtils.showActivityResultError(this,listener,requestCode,
-						responseCode, R.string.sign_in_error,
+				BaseGameUtils.showActivityResultError(this, listener,
+						requestCode, responseCode, R.string.sign_in_error,
 						R.string.other_error);
 			}
 			break;
@@ -296,13 +297,13 @@ public class AndroidLauncher extends AndroidApplication implements
 	@Override
 	public void onStart() {
 		// TODO: Implement logic
-		//game.goToWaitScreen();
-		//if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-		//	Log.w(TAG, "GameHelper: client was already connected on onStart()");
-		//} else {
-		//	Log.d(TAG, "Connecting client.");
-		//	mGoogleApiClient.connect();
-		//}
+		// game.goToWaitScreen();
+		// if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+		// Log.w(TAG, "GameHelper: client was already connected on onStart()");
+		// } else {
+		// Log.d(TAG, "Connecting client.");
+		// mGoogleApiClient.connect();
+		// }
 		super.onStart();
 	}
 
@@ -322,7 +323,8 @@ public class AndroidLauncher extends AndroidApplication implements
 	void leaveRoom() {
 		Log.d(TAG, "Leaving room.");
 		if (room != null) {
-			Games.RealTimeMultiplayer.leave(mGoogleApiClient, this, room.getRoomId());
+			Games.RealTimeMultiplayer.leave(mGoogleApiClient, this,
+					room.getRoomId());
 			room = null;
 		}
 	}
@@ -459,9 +461,11 @@ public class AndroidLauncher extends AndroidApplication implements
 	void showGameError() {
 		OnClickListener listener = new OnClickListener() {
 			@Override
-			public void onClick(DialogInterface arg0, int arg1) {}
+			public void onClick(DialogInterface arg0, int arg1) {
+			}
 		};
-		BaseGameUtils.makeSimpleDialog(this,getString(R.string.other_error),listener);
+		BaseGameUtils.makeSimpleDialog(this, getString(R.string.other_error),
+				listener);
 	}
 
 	// Called when room has been created
@@ -563,13 +567,26 @@ public class AndroidLauncher extends AndroidApplication implements
 			mParticipants = room.getParticipants();
 		}
 	}
-	
-	public ArrayList<String> getParticipantIds(){
+
+	public ArrayList<String> getParticipantIds() {
 		return room.getParticipantIds();
 	}
-	
-	public String getMyId(){
+
+	public String getMyId() {
 		return mMyId;
 	}
-	
+
+	public void sendReliableMessage(byte[] message) {
+
+	}
+
+	public void broadcastMessage(byte[] message) {
+		for (Participant p : mParticipants) {
+			if (!p.getParticipantId().equals(mMyId)) {
+				Games.RealTimeMultiplayer.sendUnreliableMessage(
+						mGoogleApiClient, message, room.getRoomId(),
+						p.getParticipantId());
+			}
+		}
+	}
 }

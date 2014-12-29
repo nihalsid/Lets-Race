@@ -4,9 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -15,8 +13,6 @@ import com.letsrace.game.LetsRace;
 
 public class FRMenuScreen extends ScreenAdapter {
 
-	private Stage stage;
-	private Skin skin;
 	private LetsRace gameRef;
 	private final static int TOTAL_BUTTONS_ON_SCREEN = 3;
 	private final static int PADDING = 10;
@@ -24,26 +20,25 @@ public class FRMenuScreen extends ScreenAdapter {
 	public FRMenuScreen(LetsRace letsRace) {
 		Gdx.app.log(FRConstants.TAG, "Menu: Constructor");
 		gameRef = letsRace;
-		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
-		skin = new Skin(gameRef.textureAtlas);
-		Image image = new Image(skin.getDrawable("menu-back"));
+		gameRef.stage.clear();
+		Gdx.input.setInputProcessor(letsRace.stage);
+		Image image = new Image(letsRace.skin.getDrawable("menu-back"));
 		image.setWidth(Gdx.graphics.getWidth());
 		image.setHeight(Gdx.graphics.getHeight());
-		stage.addActor(image);
+		letsRace.stage.addActor(image);
 		int buttonCtr = 3;
-		stage.addActor(generateTextButton("Quick Game", new ClickListener() {
+		letsRace.stage.addActor(generateTextButton("Quick Game", new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				gameRef.googleServices.startQuickGame();
 			}
 		}, --buttonCtr));
-		stage.addActor(generateTextButton("Challenge friends",
+		letsRace.stage.addActor(generateTextButton("Challenge friends",
 				new ClickListener() {
 					public void clicked(InputEvent event, float x, float y) {
 
 					}
 				}, --buttonCtr));
-		stage.addActor(generateTextButton("Check invites", new ClickListener() {
+		letsRace.stage.addActor(generateTextButton("Check invites", new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 
 			}
@@ -59,22 +54,18 @@ public class FRMenuScreen extends ScreenAdapter {
 	public void render(float delta) {
 		GL20 gl = Gdx.gl;
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		gameRef.batch.begin();
-		stage.act(delta);
-		stage.draw();
-		gameRef.batch.end();
+		gameRef.stage.act(delta);
+		gameRef.stage.draw();
 	}
 
 	public void dispose() {
 		Gdx.app.log(FRConstants.TAG, "Menu: Dispose()");
-		stage.dispose();
-		skin.dispose();
 	}
 	
 	private TextButton generateTextButton(String text, ClickListener listener,
 			int buttonNumber) {
 		TextButton button = new TextButton(text, new TextButtonStyle(
-				skin.getDrawable("button-up"), skin.getDrawable("button-down"),
+				gameRef.skin.getDrawable("button-up"), gameRef.skin.getDrawable("button-down"),
 				null, gameRef.font));
 		button.addListener(listener);
 		button.setWidth(280 * ((float) Gdx.graphics.getWidth() / FRConstants.GUI_WIDTH));

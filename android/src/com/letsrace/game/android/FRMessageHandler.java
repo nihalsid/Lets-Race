@@ -10,14 +10,14 @@ import com.letsrace.game.network.FRMessageListener;
 
 public class FRMessageHandler implements RealTimeMessageReceivedListener {
 	byte TO_SERVER = (byte) 0x80;
-	byte TO_CLIENT = 0x00;
+	byte TO_CLIENT = (byte) 0x00;
 	FRMessageListener serverListener;
 	FRMessageListener clientListener;
 	
 	public FRMessageHandler() {
 		
 	}
-
+	
 	public void setServerMessageListener(FRMessageListener listener) {
 		serverListener = listener;
 	}

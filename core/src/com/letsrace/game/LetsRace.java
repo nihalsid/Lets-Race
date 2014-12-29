@@ -6,8 +6,9 @@ import java.util.HashMap;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.network.FRGameClient;
 import com.letsrace.game.network.FRGoogleServices;
@@ -18,10 +19,10 @@ import com.letsrace.game.screen.FRWaitScreen;
 
 public class LetsRace extends Game {
 	public GameState gameState;
-	public SpriteBatch batch;
 	public BitmapFont font;
 	public FRGoogleServices googleServices;
-	public TextureAtlas textureAtlas;
+	public Stage stage;
+	public Skin skin;
 	public HashMap<String, Integer> playerNumber;
 	public int myPlayerNo;
 	public FRGameClient client;
@@ -46,9 +47,9 @@ public class LetsRace extends Game {
 
 	@Override
 	public void create() {
-		batch = new SpriteBatch();
 		font = new BitmapFont();
-		textureAtlas = new TextureAtlas(Gdx.files.internal("ui/ui-atlas.pack"));
+		skin = new Skin(new TextureAtlas(Gdx.files.internal("ui/ui-atlas.pack")));
+		stage = new Stage();
 		gameState = GameState.SPLASH_SIGN_IN;
 		setScreen(new FRSplashScreen(this));
 	}
@@ -59,7 +60,7 @@ public class LetsRace extends Game {
 	}
 
 	public void dispose() {
-		batch.dispose();
+		stage.dispose();
 		font.dispose();
 	}
 

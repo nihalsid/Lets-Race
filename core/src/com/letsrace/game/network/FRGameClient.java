@@ -3,9 +3,14 @@ package com.letsrace.game.network;
 import com.letsrace.game.FRGameWorld;
 import static com.letsrace.game.network.FRMessageCodes.*;
 
-public class FRGameClient implements Runnable,FRMessageListener{
+public class FRGameClient implements FRMessageListener{
 	public FRGameWorld gameWorld;
-
+	public String serverID;
+	
+	public FRGameClient(String serverID) {
+		this.serverID = serverID;
+	}
+	
 	@Override
 	public void onMessageRecieved(byte[] buffer, String participantId) {
 		switch(buffer[0]){
@@ -50,11 +55,5 @@ public class FRGameClient implements Runnable,FRMessageListener{
 		case TURN_RIGHT_PLAYER_3:
 			break;
 		}
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
 	}
 }
