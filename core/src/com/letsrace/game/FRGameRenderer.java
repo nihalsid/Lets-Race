@@ -31,7 +31,7 @@ public class FRGameRenderer {
 	public void render(){
 		cam.update();
 		cam.rotate(worldRef.mapHandler.angleMon.getTurnAngle());
-		cam.position.set(worldRef.carHandler.currentPlayerCar.carCore.getWorldPosition().x*PIXELS_PER_UNIT,worldRef.carHandler.currentPlayerCar.carCore.getWorldPosition().y*PIXELS_PER_UNIT,0);
+		cam.position.set(worldRef.carHandler.currentPlayerCar.getWorldPosition().x*PIXELS_PER_UNIT,worldRef.carHandler.currentPlayerCar.getWorldPosition().y*PIXELS_PER_UNIT,0);
 		tiledMapRenderer.setView(cam);
 		tiledMapRenderer.render();
 		Matrix4 debugMat = new Matrix4(cam.combined);

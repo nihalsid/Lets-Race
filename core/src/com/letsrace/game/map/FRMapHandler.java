@@ -26,7 +26,6 @@ public class FRMapHandler{
 		manager = new MapBodyManager(physicalWorld, PIXELS_PER_UNIT, null, 0);
 		manager.createPhysics(tiledMap);
 		initialPositionMarker = manager.getInitialPosition(tiledMap);
-		
 	}
 	
 	public void setupContactListener(Body mainCarBody){

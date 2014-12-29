@@ -18,7 +18,6 @@ public class Car {
 	public Steer steer;
 	public Accel accelerate;
 	public List<Wheel> wheels;
-	Vector2 position;
 	Vector2 origin;
 
 	public enum Steer {
@@ -43,7 +42,6 @@ public class Car {
 		this.maxRevSpeed = maxSpeed / 2;
 		this.power = power;
 		this.wheelAngle = 0;
-		this.position = position;
 		BodyEditorLoader loader = new BodyEditorLoader(
 				Gdx.files.internal(jsonFilePrefix + "-normal.json"));
 		// init body

@@ -26,7 +26,6 @@ public class FRMenuScreen extends ScreenAdapter {
 		gameRef = letsRace;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-		System.out.println(skin==null);
 		skin = new Skin(gameRef.textureAtlas);
 		Image image = new Image(skin.getDrawable("menu-back"));
 		image.setWidth(Gdx.graphics.getWidth());
@@ -35,7 +34,7 @@ public class FRMenuScreen extends ScreenAdapter {
 		int buttonCtr = 3;
 		stage.addActor(generateTextButton("Quick Game", new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				gameRef.setScreen(new FRWaitScreen(gameRef));
+				gameRef.googleServices.startQuickGame();
 			}
 		}, --buttonCtr));
 		stage.addActor(generateTextButton("Challenge friends",

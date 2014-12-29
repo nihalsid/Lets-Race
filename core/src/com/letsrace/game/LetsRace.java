@@ -1,10 +1,13 @@
 package com.letsrace.game;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.google.android.gms.games.multiplayer.Participant;
 import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.network.FRGoogleServices;
 import com.letsrace.game.screen.FRGameScreen;
@@ -22,7 +25,24 @@ public class LetsRace extends Game {
 	public LetsRace(FRGoogleServices services) {
 		googleServices = services;
 	}
-
+	
+	public void decideOnServerAndStart(){
+		ArrayList<Participant> participants = googleServices.getParticipants();
+		int serverCandidate = Integer.MIN_VALUE;
+		for (Participant p : participants){
+			if(serverCandidate<p.getPlayer().getPlayerId().hashCode()){
+				serverCandidate = p.getPlayer().getPlayerId().hashCode();
+			}
+			else if(serverCandidate==p.getPlayer().getPlayerId().hashCode()){
+				Gdx.app.log(FRConstants.TAG, "Server deciding logic failed, hashed to same value");
+			}
+		}
+		if (googleServices.getMyId().hashCode() == serverCandidate){
+			Gdx.app.log(FRConstants.TAG, "I am the server");	
+		}
+		Gdx.app.log(FRConstants.TAG, "I am not the server");
+	}
+	
 	@Override
 	public void create() {
 		batch = new SpriteBatch();

@@ -1,7 +1,6 @@
 package com.letsrace.game.android;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
@@ -24,8 +23,6 @@ import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
 import com.google.android.gms.games.multiplayer.Participant;
-import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
-import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
@@ -38,8 +35,7 @@ import com.letsrace.game.network.FRGoogleServices;
 
 public class AndroidLauncher extends AndroidApplication implements
 		FRGoogleServices, GoogleApiClient.ConnectionCallbacks,
-		GoogleApiClient.OnConnectionFailedListener,
-		RealTimeMessageReceivedListener, RoomStatusUpdateListener,
+		GoogleApiClient.OnConnectionFailedListener, RoomStatusUpdateListener,
 		RoomUpdateListener, OnInvitationReceivedListener {
 	/*
 	 * API INTEGRATION SECTION. This section contains the code that integrates
@@ -86,9 +82,9 @@ public class AndroidLauncher extends AndroidApplication implements
 	// invitation listener
 	String mIncomingInvitationId = null;
 
-	// Message buffer for sending messages
-	byte[] mMsgBuf = new byte[2];
-
+	// Message handler
+	FRMessageHandler messageHandler;
+	
 	LetsRace game;
 
 	@Override
@@ -104,6 +100,7 @@ public class AndroidLauncher extends AndroidApplication implements
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		game = new LetsRace(this);
+		messageHandler = new FRMessageHandler();
 		initialize(game, config);
 	}
 
@@ -129,13 +126,13 @@ public class AndroidLauncher extends AndroidApplication implements
 		startActivityForResult(intent, RC_INVITATION_INBOX);
 	}
 
-	void startQuickGame() {
+	public void startQuickGame() {
 		// quick-start a game with 1 randomly selected opponent
 		final int MIN_OPPONENTS = 1, MAX_OPPONENTS = 1;
 		Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(
 				MIN_OPPONENTS, MAX_OPPONENTS, 0);
 		RoomConfig.Builder rtmConfigBuilder = RoomConfig.builder(this);
-		rtmConfigBuilder.setMessageReceivedListener(this);
+		rtmConfigBuilder.setMessageReceivedListener(messageHandler);
 		rtmConfigBuilder.setRoomStatusUpdateListener(this);
 		rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
 		game.moveToScreen(GameState.WAIT);
@@ -169,6 +166,7 @@ public class AndroidLauncher extends AndroidApplication implements
 			} else if (responseCode == GamesActivityResultCodes.RESULT_LEFT_ROOM) {
 				// player indicated that they want to leave the room
 				leaveRoom();
+				game.moveToScreen(GameState.MENU);
 			} else if (responseCode == Activity.RESULT_CANCELED) {
 				// Dialog was cancelled (user pressed back key, for instance).
 				// In our game,
@@ -176,6 +174,7 @@ public class AndroidLauncher extends AndroidApplication implements
 				// this could mean
 				// something else (like minimizing the waiting room UI).
 				leaveRoom();
+				game.moveToScreen(GameState.MENU);
 			}
 			break;
 		case RC_SIGN_IN:
@@ -236,7 +235,7 @@ public class AndroidLauncher extends AndroidApplication implements
 		Log.d(TAG, "Creating room...");
 		RoomConfig.Builder rtmConfigBuilder = RoomConfig.builder(this);
 		rtmConfigBuilder.addPlayersToInvite(invitees);
-		rtmConfigBuilder.setMessageReceivedListener(this);
+		rtmConfigBuilder.setMessageReceivedListener(messageHandler);
 		rtmConfigBuilder.setRoomStatusUpdateListener(this);
 		if (autoMatchCriteria != null) {
 			rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
@@ -271,7 +270,7 @@ public class AndroidLauncher extends AndroidApplication implements
 		Log.d(TAG, "Accepting invitation: " + invId);
 		RoomConfig.Builder roomConfigBuilder = RoomConfig.builder(this);
 		roomConfigBuilder.setInvitationIdToAccept(invId)
-				.setMessageReceivedListener(this)
+				.setMessageReceivedListener(messageHandler)
 				.setRoomStatusUpdateListener(this);
 		game.moveToScreen(GameState.WAIT);
 		Games.RealTimeMultiplayer.join(mGoogleApiClient,
@@ -559,15 +558,18 @@ public class AndroidLauncher extends AndroidApplication implements
 		updateRoom(room);
 	}
 
-	@Override
-	public void onRealTimeMessageReceived(RealTimeMessage rtm) {
-		byte[] buf = rtm.getMessageData();
-		Log.d(TAG, "Message received: " + Arrays.toString(buf));
-	}
-
 	void updateRoom(Room room) {
 		if (room != null) {
 			mParticipants = room.getParticipants();
 		}
 	}
+	
+	public ArrayList<Participant> getParticipants(){
+		return mParticipants;
+	}
+	
+	public String getMyId(){
+		return mMyId;
+	}
+	
 }
