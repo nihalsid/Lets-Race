@@ -43,7 +43,10 @@ public class FRCarSelectScreen extends ScreenAdapter {
 			public void clicked(InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
 				byte[] msg = new byte[1];
-				msg[0] = FRMessageCodes.SELECTED_CAR_0;
+				if (gameRef.myPlayerNo == 0)
+					msg[0] = FRMessageCodes.SELECTED_CAR_0;
+				else if (gameRef.myPlayerNo == 1)
+					msg[0] = FRMessageCodes.SELECTED_CAR_1;
 				gameRef.googleServices.sendReliableMessage(msg, gameRef.client.serverID);
 				gameRef.moveToScreen(GameState.WAIT);
 			}

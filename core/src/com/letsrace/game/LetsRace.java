@@ -38,7 +38,7 @@ public class LetsRace extends Game {
 		Arrays.sort(participants);
 		if (participants[0] == googleServices.getMyId()){
 			Gdx.app.log(FRConstants.TAG, "I am the server");
-			FRGameServer server = new FRGameServer();
+			FRGameServer server = new FRGameServer(this, participants);
 			googleServices.setServerListener(server);
 		}
 		int ctr = 0;
