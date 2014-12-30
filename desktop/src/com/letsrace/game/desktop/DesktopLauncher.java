@@ -75,4 +75,10 @@ public class DesktopLauncher implements FRGoogleServices{
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void broadcastReliableMessage(byte[] message) {
+		// TODO Auto-generated method stub
+		
+	}
 }

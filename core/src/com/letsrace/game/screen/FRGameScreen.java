@@ -11,10 +11,11 @@ public class FRGameScreen extends ScreenAdapter{
 	public LetsRace gameRef;
 	public FRGameRenderer renderer;
 	public FRGameWorld gameWorldRef;
+	
 	public FRGameScreen(LetsRace letsRace) {
 		this.gameRef = letsRace;
 		gameWorldRef = gameRef.client.gameWorld;
-		renderer = new FRGameRenderer(gameWorldRef);
+		renderer = new FRGameRenderer(gameRef.myPlayerNo, gameWorldRef);
 	}
 	
 	@Override

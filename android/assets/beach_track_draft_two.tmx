@@ -13,7 +13,7 @@
    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
   </data>
  </layer>
- <objectgroup name="Collision">
+ <objectgroup name="Collision" visible="0">
   <object x="1194" y="468.667">
    <polyline points="0,0 -39.3333,-40.6667 -99.3333,-70 -136,-78.6667 -133.333,-78.6667"/>
   </object>
@@ -84,7 +84,7 @@
    <polyline points="0,0 -4.66667,58.6667 -26.6667,110.667 -61.3333,153.333 -100,181.333 -134.667,196 -184,206.667 -223.333,204.667 -286,203.333 -323.333,195.333 -363.333,175.333 -409.333,134.667 -442,80.6667 -447.333,62"/>
   </object>
  </objectgroup>
- <objectgroup name="MapMarks">
+ <objectgroup name="MapMarks" visible="0">
   <object x="1238.67" y="920.667">
    <polyline points="0,0 219.333,2"/>
   </object>
@@ -201,6 +201,9 @@
   </object>
  </objectgroup>
  <objectgroup name="Positions">
-  <object name="CarSpawn" x="1334.67" y="888.667" width="16.6667" height="14"/>
+  <object name="CarSpawn0" x="1297.67" y="872.667" width="16.6667" height="14"/>
+  <object name="CarSpawn1" x="1386" y="873" width="19" height="16"/>
+  <object name="CarSpawn2" x="1293" y="962" width="20" height="16"/>
+  <object name="CarSpawn3" x="1395" y="959" width="15" height="17"/>
  </objectgroup>
 </map>

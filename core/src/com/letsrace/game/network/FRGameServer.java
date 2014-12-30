@@ -11,6 +11,8 @@ import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT;
 
 import java.util.HashMap;
 
+import com.badlogic.gdx.Gdx;
+import com.letsrace.game.FRConstants;
 import com.letsrace.game.FRGameWorld;
 import com.letsrace.game.LetsRace;
 
@@ -18,7 +20,9 @@ public class FRGameServer implements FRMessageListener {
 	FRGameWorld gameWorld;
 	LetsRace gameRef;
 	public FRGameServer(LetsRace game, String[] participants) {
+		Gdx.app.log(FRConstants.TAG, "FRGameServer(): Constructor");
 		gameRef = game;
+		gameWorld = new FRGameWorld();
 		sessionData = new HashMap<String, FRPlayerData>();
 		for (String s : participants)
 			sessionData.put(s, new FRPlayerData());
@@ -39,11 +43,12 @@ public class FRGameServer implements FRMessageListener {
 		case SELECTED_CAR_1:
 		case SELECTED_CAR_2:
 		case SELECTED_CAR_3:
+			Gdx.app.log(FRConstants.TAG, "FRGameServer(): Car selection by: P"+gameRef.playerNumber.get(senderParticipantId)+", C:"+FRMessageCodes.extractHeaderExtField(buffer[0]));
 			checkCarAvailabilityAndReply(buffer[0], senderParticipantId);
 			if(isAllPickConfirmed()){
 				byte msg[] = new byte[1];
 				msg[0] = FRMessageCodes.PROCEED_TO_GAME_SCREEN;
-				gameRef.googleServices.broadcastMessage(msg);
+				gameRef.googleServices.broadcastReliableMessage(msg);
 			}
 			break;
 		}
@@ -51,17 +56,19 @@ public class FRGameServer implements FRMessageListener {
 	
 	private void checkCarAvailabilityAndReply(byte msgHead, String senderParticipantId){
 		for (FRPlayerData d: sessionData.values()){
-			if (d.carCode == FRMessageCodes.mapMessagetoCarCode(msgHead)){
+			if (d.carCode == FRMessageCodes.extractHeaderExtField(msgHead)){
 				byte[] msg = new byte[1];
 				msg[0] = FRMessageCodes.REPICK_CAR;
 				gameRef.googleServices.sendReliableMessage(msg, senderParticipantId);
 				return;
 			}
 		}
-		sessionData.get(senderParticipantId).carCode = FRMessageCodes.mapMessagetoCarCode(msgHead);
-		byte[] msg = new byte[1];
-		msg[0] = FRMessageCodes.CAR_PICK_CONFIRMED;
-		gameRef.googleServices.sendReliableMessage(msg, senderParticipantId);
+		sessionData.get(senderParticipantId).carCode = FRMessageCodes.extractHeaderExtField(msgHead);
+		byte[] msg = new byte[2];
+		msg[0] = (byte) (FRMessageCodes.CAR_PICK_CONFIRMED_PLAYER_0|(byte)gameRef.playerNumber.get(senderParticipantId).intValue());
+		msg[1] = FRMessageCodes.extractHeaderExtField(msgHead);
+		gameRef.googleServices.broadcastReliableMessage(msg);
+		gameWorld.carHandler.addCar(gameRef.playerNumber.get(senderParticipantId).intValue(),  FRMessageCodes.extractHeaderExtField(msgHead));
 	}
 	
 	private boolean isAllPickConfirmed(){

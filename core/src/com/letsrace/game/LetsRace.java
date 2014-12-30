@@ -1,5 +1,6 @@
 package com.letsrace.game;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -13,6 +14,7 @@ import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.network.FRGameClient;
 import com.letsrace.game.network.FRGameServer;
 import com.letsrace.game.network.FRGoogleServices;
+import com.letsrace.game.screen.FRCarSelectScreen;
 import com.letsrace.game.screen.FRGameScreen;
 import com.letsrace.game.screen.FRMenuScreen;
 import com.letsrace.game.screen.FRSplashScreen;
@@ -34,7 +36,8 @@ public class LetsRace extends Game {
 	}
 
 	public void decideOnServerAndStart() {
-		String[] participants = (String[]) googleServices.getParticipantIds().toArray();
+		ArrayList<String> list =  googleServices.getParticipantIds();
+		String[] participants = list.toArray(new String[list.size()]);
 		Arrays.sort(participants);
 		if (participants[0] == googleServices.getMyId()){
 			Gdx.app.log(FRConstants.TAG, "I am the server");
@@ -46,10 +49,12 @@ public class LetsRace extends Game {
 			playerNumber.put(s, ctr++);
 		}
 		myPlayerNo = playerNumber.get(googleServices.getMyId());
-		Gdx.app.log(FRConstants.TAG, "I am the client");
-		client = new FRGameClient(participants[0]);
+		Gdx.app.log(FRConstants.TAG, "I am the client - P"+myPlayerNo);
+		client = new FRGameClient(this, participants[0]);
+		Gdx.app.log(FRConstants.TAG, "Setting Client Listener");
 		googleServices.setClientListener(client);
-		moveToScreen(GameState.CAR_SELECT);
+		Gdx.app.log(FRConstants.TAG, "Moving to car-select screen");
+		moveToScreen(GameState.SELECT_CAR);
 	}
 
 	@Override
@@ -88,6 +93,7 @@ public class LetsRace extends Game {
 			break;
 		case SELECT_CAR:
 			gameState = GameState.SELECT_CAR;
+			setScreen(new FRCarSelectScreen(this));
 			break;
 		case SPLASH_SIGN_IN:
 			gameState = GameState.SPLASH_SIGN_IN;
