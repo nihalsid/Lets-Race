@@ -3,16 +3,11 @@ package com.letsrace.game.network;
 import com.letsrace.game.FRGameWorld;
 import static com.letsrace.game.network.FRMessageCodes.*;
 
-public class FRGameServer implements Runnable, FRMessageListener {
+public class FRGameServer implements FRMessageListener {
 	FRGameWorld gameWorld;
 	
 	public FRGameServer() {
 		
-	}
-
-	@Override
-	public void run() {
-		// When in game, send state after every n seconds
 	}
 
 	@Override

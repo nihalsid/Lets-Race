@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.network.FRGoogleServices;
+import com.letsrace.game.network.FRMessageListener;
 
 public class DesktopLauncher implements FRGoogleServices{
 	public LetsRace game;
@@ -49,5 +50,29 @@ public class DesktopLauncher implements FRGoogleServices{
 	public ArrayList<String> getParticipantIds() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setServerListener(FRMessageListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setClientListener(FRMessageListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendReliableMessage(byte[] message, String participantID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void broadcastMessage(byte[] message) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -68,8 +68,8 @@ public class FRMenuScreen extends ScreenAdapter {
 				gameRef.skin.getDrawable("button-up"), gameRef.skin.getDrawable("button-down"),
 				null, gameRef.font));
 		button.addListener(listener);
-		button.setWidth(280 * ((float) Gdx.graphics.getWidth() / FRConstants.GUI_WIDTH));
-		button.setHeight(80 * ((float) Gdx.graphics.getHeight() / FRConstants.GUI_HIEGHT));
+		button.setWidth(280 * FRConstants.GUI_SCALE_WIDTH);
+		button.setHeight(80 * FRConstants.GUI_SCALE_HEIGHT);
 		button.setPosition(Gdx.graphics.getWidth() / 2 - button.getWidth() / 2,
 				Gdx.graphics.getHeight() / 2
 						- (TOTAL_BUTTONS_ON_SCREEN / 2 - buttonNumber)

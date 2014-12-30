@@ -32,6 +32,7 @@ import com.google.example.games.basegameutils.BaseGameUtils;
 import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.network.FRGoogleServices;
+import com.letsrace.game.network.FRMessageListener;
 
 public class AndroidLauncher extends AndroidApplication implements
 		FRGoogleServices, GoogleApiClient.ConnectionCallbacks,
@@ -576,8 +577,9 @@ public class AndroidLauncher extends AndroidApplication implements
 		return mMyId;
 	}
 
-	public void sendReliableMessage(byte[] message) {
-
+	public void sendReliableMessage(byte[] message, String participantID) {
+		Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null,
+				message, room.getRoomId(), participantID);
 	}
 
 	public void broadcastMessage(byte[] message) {
@@ -588,5 +590,15 @@ public class AndroidLauncher extends AndroidApplication implements
 						p.getParticipantId());
 			}
 		}
+	}
+
+	@Override
+	public void setServerListener(FRMessageListener listener) {
+		messageHandler.setServerMessageListener(listener);
+	}
+
+	@Override
+	public void setClientListener(FRMessageListener listener) {
+		messageHandler.setClientMessageListener(listener);
 	}
 }

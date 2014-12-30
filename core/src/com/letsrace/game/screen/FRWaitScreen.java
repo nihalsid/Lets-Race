@@ -24,8 +24,8 @@ public class FRWaitScreen extends ScreenAdapter{
 		image.setZIndex(1);
 		gameRef.stage.addActor(image);
 		Image steering = new Image(gameRef.skin.getDrawable("wait-screen-steer"));
-		steering.setWidth(210 * ((float)Gdx.graphics.getWidth()/FRConstants.GUI_WIDTH));
-		steering.setHeight(210 * ((float)Gdx.graphics.getHeight()/FRConstants.GUI_HIEGHT));
+		steering.setWidth(210 * FRConstants.GUI_SCALE_WIDTH);
+		steering.setHeight(210 * FRConstants.GUI_SCALE_WIDTH);
 		steering.setPosition(Gdx.graphics.getWidth()/2 - steering.getWidth()/2, Gdx.graphics.getHeight()/2  - steering.getHeight()/2);
 		steering.setOrigin(steering.getWidth()/2,steering.getHeight()/2);
 		steering.addAction(Actions.forever(Actions.sequence(Actions.rotateBy(ROTATION,DURATION),Actions.rotateBy(-2*ROTATION,DURATION*2),Actions.rotateBy(ROTATION,DURATION),Actions.rotateBy(ROTATION*4,DURATION),Actions.rotateBy(-ROTATION*4,DURATION))));

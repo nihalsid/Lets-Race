@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.network.FRGameClient;
+import com.letsrace.game.network.FRGameServer;
 import com.letsrace.game.network.FRGoogleServices;
 import com.letsrace.game.screen.FRGameScreen;
 import com.letsrace.game.screen.FRMenuScreen;
@@ -35,14 +36,20 @@ public class LetsRace extends Game {
 	public void decideOnServerAndStart() {
 		String[] participants = (String[]) googleServices.getParticipantIds().toArray();
 		Arrays.sort(participants);
-		if (participants[0] == googleServices.getMyId())
+		if (participants[0] == googleServices.getMyId()){
 			Gdx.app.log(FRConstants.TAG, "I am the server");
+			FRGameServer server = new FRGameServer();
+			googleServices.setServerListener(server);
+		}
 		int ctr = 0;
 		for (String s : participants) {
 			playerNumber.put(s, ctr++);
 		}
 		myPlayerNo = playerNumber.get(googleServices.getMyId());
-		Gdx.app.log(FRConstants.TAG, "I am not the server");
+		Gdx.app.log(FRConstants.TAG, "I am the client");
+		client = new FRGameClient(participants[0]);
+		googleServices.setClientListener(client);
+		moveToScreen(GameState.CAR_SELECT);
 	}
 
 	@Override
@@ -51,6 +58,7 @@ public class LetsRace extends Game {
 		skin = new Skin(new TextureAtlas(Gdx.files.internal("ui/ui-atlas.pack")));
 		stage = new Stage();
 		gameState = GameState.SPLASH_SIGN_IN;
+		FRConstants.initializeDynamicConstants();
 		setScreen(new FRSplashScreen(this));
 	}
 
