@@ -11,5 +11,6 @@ public interface FRGoogleServices {
 	public void setClientListener(FRMessageListener listener);
 	public void sendReliableMessage(byte[] message, String participantID);
 	public void broadcastMessage(byte[] message);
+	public void broadcastReliableMessage(byte[] message);
 	public boolean isSignedIn();
 }

@@ -25,19 +25,19 @@ public class FRCarSelectScreen extends ScreenAdapter {
 		Image name = new Image(gameRef.skin.getDrawable("car-selection-name"));
 		name.setWidth(400*FRConstants.GUI_SCALE_WIDTH);
 		name.setHeight(50*FRConstants.GUI_SCALE_HEIGHT);
-		name.setPosition(36*FRConstants.GUI_SCALE_WIDTH, (Gdx.graphics.getHeight()-30)*FRConstants.GUI_SCALE_HEIGHT);
+		name.setPosition(36*FRConstants.GUI_SCALE_WIDTH, (FRConstants.GUI_HIEGHT-30-50)*FRConstants.GUI_SCALE_HEIGHT);
 		Image character = new Image(gameRef.skin.getDrawable("car-selection-char"));
 		character.setWidth(230*FRConstants.GUI_SCALE_WIDTH);
 		character.setHeight(250*FRConstants.GUI_SCALE_HEIGHT);
-		character.setPosition(36*FRConstants.GUI_SCALE_WIDTH, (Gdx.graphics.getHeight()-96)*FRConstants.GUI_SCALE_HEIGHT);
+		character.setPosition(36*FRConstants.GUI_SCALE_WIDTH, (FRConstants.GUI_HIEGHT-96-250)*FRConstants.GUI_SCALE_HEIGHT);
 		Image stats = new Image(gameRef.skin.getDrawable("car-selection-stats"));
 		stats.setWidth(150*FRConstants.GUI_SCALE_WIDTH);
 		stats.setHeight(250*FRConstants.GUI_SCALE_WIDTH);
-		stats.setPosition(286*FRConstants.GUI_SCALE_WIDTH, (Gdx.graphics.getHeight()-96)*FRConstants.GUI_SCALE_HEIGHT);
+		stats.setPosition(286*FRConstants.GUI_SCALE_WIDTH, (FRConstants.GUI_HIEGHT-96-250)*FRConstants.GUI_SCALE_HEIGHT);
 		Image car = new Image(gameRef.skin.getDrawable("car-selection-car"));
 		car.setWidth(400*FRConstants.GUI_SCALE_WIDTH);
 		car.setHeight(400*FRConstants.GUI_SCALE_WIDTH);
-		car.setPosition(36*FRConstants.GUI_SCALE_WIDTH, (Gdx.graphics.getHeight()-364)*FRConstants.GUI_SCALE_HEIGHT);
+		car.setPosition(36*FRConstants.GUI_SCALE_WIDTH, (FRConstants.GUI_HIEGHT-364-400)*FRConstants.GUI_SCALE_HEIGHT);
 		car.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

@@ -2,7 +2,9 @@ package com.letsrace.game.network;
 
 public class FRPlayerData {
 	int carCode;
+	int ping;
 	public FRPlayerData() {
-		carCode = -1;
+		carCode = Integer.MIN_VALUE;
+		ping = Integer.MIN_VALUE;
 	}
 }

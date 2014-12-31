@@ -6,15 +6,18 @@ import com.badlogic.gdx.graphics.GL20;
 import com.letsrace.game.FRGameRenderer;
 import com.letsrace.game.FRGameWorld;
 import com.letsrace.game.LetsRace;
+import com.letsrace.game.input.FRNetworkInputHandler;
 
 public class FRGameScreen extends ScreenAdapter{
 	public LetsRace gameRef;
 	public FRGameRenderer renderer;
 	public FRGameWorld gameWorldRef;
+	
 	public FRGameScreen(LetsRace letsRace) {
 		this.gameRef = letsRace;
 		gameWorldRef = gameRef.client.gameWorld;
-		renderer = new FRGameRenderer(gameWorldRef);
+		renderer = new FRGameRenderer(gameRef.myPlayerNo, gameWorldRef);
+		Gdx.input.setInputProcessor(new FRNetworkInputHandler(gameRef.googleServices, gameRef.client.serverID));
 	}
 	
 	@Override

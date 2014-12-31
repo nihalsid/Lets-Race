@@ -263,16 +263,18 @@ public class MapBodyManager {
 		return chain;
 	}
 
-	public Vector2 getInitialPosition(TiledMap map){
+	public Vector2[] getInitialPosition(TiledMap map){
 		MapLayer layer = map.getLayers().get("Positions");
-
 		if (layer == null) {
 			return null;
 		}
-
 		MapObjects objects = layer.getObjects();
-		Rectangle r = ((RectangleMapObject)objects.get("CarSpawn")).getRectangle();
-		return new Vector2(r.x/units,r.y/units);
+		Rectangle r0 = ((RectangleMapObject)objects.get("CarSpawn0")).getRectangle();
+		Rectangle r1 = ((RectangleMapObject)objects.get("CarSpawn1")).getRectangle();
+		Rectangle r2 = ((RectangleMapObject)objects.get("CarSpawn2")).getRectangle();
+		Rectangle r3 = ((RectangleMapObject)objects.get("CarSpawn3")).getRectangle();
+		Vector2[] initialPositions = {new Vector2(r0.x/units,r0.y/units),new Vector2(r1.x/units,r1.y/units),new Vector2(r2.x/units,r2.y/units),new Vector2(r3.x/units,r3.y/units)};
+		return initialPositions;
 	}
 	
 	public MarkerBody fetchMarkerBody(Body b){

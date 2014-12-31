@@ -13,8 +13,15 @@ public class FRGameWorld {
 	public FRGameWorld(){
 		physicalWorld = new World(new Vector2(0.0f, 0.0f), true);
 		mapHandler = new FRMapHandler(physicalWorld);
-		carHandler = new FRCarHandler(physicalWorld, mapHandler.initialPositionMarker);
-		mapHandler.setupContactListener(carHandler.currentPlayerCar.body);
+		carHandler = new FRCarHandler(physicalWorld, mapHandler.initialPositionMarkers);
+	}
+	
+	public void setupPrimaryContactListener(){
+		//mapHandler.setupContactListener(carHandler.currentPlayerCar.body);
+	}
+	
+	public void setupAllContactListeners(){
+		
 	}
 	
 	public void update(float delta) {

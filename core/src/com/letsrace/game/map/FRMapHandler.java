@@ -16,7 +16,7 @@ public class FRMapHandler{
 	public MapBodyManager manager;
 	public TiledMap tiledMap;
 	public World physicalWorldRef;
-	public Vector2 initialPositionMarker;
+	public Vector2[] initialPositionMarkers;
 	public FRAngleMonitor angleMon=new FRAngleMonitor(0.50f);
 	public Body mainCarBody;
 	
@@ -25,7 +25,7 @@ public class FRMapHandler{
 		tiledMap = new TmxMapLoader().load("beach_track_draft_two.tmx");
 		manager = new MapBodyManager(physicalWorld, PIXELS_PER_UNIT, null, 0);
 		manager.createPhysics(tiledMap);
-		initialPositionMarker = manager.getInitialPosition(tiledMap);
+		initialPositionMarkers = manager.getInitialPosition(tiledMap);
 	}
 	
 	public void setupContactListener(Body mainCarBody){
