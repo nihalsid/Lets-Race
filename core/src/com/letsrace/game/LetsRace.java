@@ -14,9 +14,11 @@ import com.letsrace.game.network.FRGameClient;
 import com.letsrace.game.network.FRGameServer;
 import com.letsrace.game.network.FRGoogleServices;
 import com.letsrace.game.screen.FRGameScreen;
-import com.letsrace.game.screen.FRMenuScreen;
 import com.letsrace.game.screen.FRSplashScreen;
 import com.letsrace.game.screen.FRWaitScreen;
+import com.letsrace.game.screen.MenuScreen;
+import com.letsrace.game.screen.MultiplayerMenuScreen;
+import com.letsrace.game.screen.SplashScreen;
 
 public class LetsRace extends Game {
 	public GameState gameState;
@@ -27,16 +29,17 @@ public class LetsRace extends Game {
 	public HashMap<String, Integer> playerNumber;
 	public int myPlayerNo;
 	public FRGameClient client;
-	
+
 	public LetsRace(FRGoogleServices services) {
 		googleServices = services;
 		playerNumber = new HashMap<String, Integer>();
 	}
-
+	
 	public void decideOnServerAndStart() {
-		String[] participants = (String[]) googleServices.getParticipantIds().toArray();
+		String[] participants = (String[]) googleServices.getParticipantIds()
+				.toArray();
 		Arrays.sort(participants);
-		if (participants[0] == googleServices.getMyId()){
+		if (participants[0] == googleServices.getMyId()) {
 			Gdx.app.log(FRConstants.TAG, "I am the server");
 			FRGameServer server = new FRGameServer(this, participants);
 			googleServices.setServerListener(server);
@@ -55,11 +58,13 @@ public class LetsRace extends Game {
 	@Override
 	public void create() {
 		font = new BitmapFont();
-		skin = new Skin(new TextureAtlas(Gdx.files.internal("ui/ui-atlas.pack")));
+		skin = new Skin(
+				new TextureAtlas(Gdx.files.internal("ui/ui-atlas.pack")));
 		stage = new Stage();
-		gameState = GameState.SPLASH_SIGN_IN;
+		gameState = GameState.SPLASH;
 		FRConstants.initializeDynamicConstants();
-		setScreen(new FRSplashScreen(this));
+		Assets.load();
+		setScreen(new SplashScreen(this));
 	}
 
 	@Override
@@ -80,7 +85,7 @@ public class LetsRace extends Game {
 			break;
 		case MENU:
 			gameState = GameState.MENU;
-			setScreen(new FRMenuScreen(this));
+			setScreen(new MenuScreen(this));
 			break;
 		case WAIT:
 			gameState = GameState.WAIT;
@@ -93,9 +98,16 @@ public class LetsRace extends Game {
 			gameState = GameState.SPLASH_SIGN_IN;
 			setScreen(new FRSplashScreen(this));
 			break;
+		case SPLASH:
+			gameState = GameState.SPLASH;
+			setScreen(new SplashScreen(this));
+			break;
+		case MULTIPLAYER_MENU:
+			gameState = GameState.MULTIPLAYER_MENU;
+			setScreen(new MultiplayerMenuScreen(this));
+			break;
 		default:
 			break;
-
 		}
 	}
 }
