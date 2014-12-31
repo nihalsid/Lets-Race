@@ -40,6 +40,7 @@ public class FRGameServer implements FRMessageListener {
 		case STEER_STRAIGHT:
 			msg = new byte[1];
 			msg[0]=FRMessageCodes.convertToCorrespondingPlayerMessageCode(buffer[0], gameRef.playerNumber.get(senderParticipantId).intValue());
+			Gdx.app.log(FRConstants.TAG, "FRGameServer(): Relaying - "+msg[0]);
 			gameRef.googleServices.broadcastReliableMessage(msg);
 			break;
 		case SELECTED_CAR_0:

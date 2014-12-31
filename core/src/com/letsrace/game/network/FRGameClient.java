@@ -30,6 +30,7 @@ public class FRGameClient implements FRMessageListener{
 		int playerNo;
 		switch(buffer[0]){
 		case PING_DETECT_REQ:
+			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - PingDetectReq");
 			byte[] msg = new byte[1];
 			msg[0] = PING_DETECT_RES;
 			gameRef.googleServices.sendReliableMessage(msg, serverID);
@@ -39,6 +40,7 @@ public class FRGameClient implements FRMessageListener{
 		case ACCEL_DOWN_PLAYER_2:
 		case ACCEL_DOWN_PLAYER_3:
 			playerNo= FRMessageCodes.extractHeaderExtField(buffer[0]);
+			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - AccelDown: P"+playerNo);
 			gameWorld.carHandler.cars.get(playerNo).accelerate = Accel.BRAKE;
 			break;
 		case ACCEL_UP_PLAYER_0:
@@ -46,6 +48,7 @@ public class FRGameClient implements FRMessageListener{
 		case ACCEL_UP_PLAYER_2:
 		case ACCEL_UP_PLAYER_3:
 			playerNo = FRMessageCodes.extractHeaderExtField(buffer[0]);
+			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - AccelUp: P"+playerNo);
 			gameWorld.carHandler.cars.get(playerNo).accelerate = Accel.ACCELERATE;
 			break;
 		case CAR_PICK_CONFIRMED_PLAYER_0:
@@ -66,6 +69,7 @@ public class FRGameClient implements FRMessageListener{
 		case REPICK_CAR:
 			break;
 		case RESYNC_HEAD:
+			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - Resync");
 			handleSyncPacket(buffer);
 			break;
 		case TURN_LEFT_PLAYER_0:
@@ -73,6 +77,7 @@ public class FRGameClient implements FRMessageListener{
 		case TURN_LEFT_PLAYER_2:
 		case TURN_LEFT_PLAYER_3:
 			playerNo = FRMessageCodes.extractHeaderExtField(buffer[0]);
+			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - TurnLeft: P"+playerNo);
 			gameWorld.carHandler.cars.get(playerNo).steer = Steer.LEFT;
 			break;
 		case TURN_RIGHT_PLAYER_0:
@@ -80,6 +85,7 @@ public class FRGameClient implements FRMessageListener{
 		case TURN_RIGHT_PLAYER_2:
 		case TURN_RIGHT_PLAYER_3:
 			playerNo = FRMessageCodes.extractHeaderExtField(buffer[0]);
+			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved -TurnRight: P"+playerNo);
 			gameWorld.carHandler.cars.get(playerNo).steer = Steer.RIGHT;
 			break;
 		case STEER_STRAIGHT_PLAYER_0:
@@ -87,6 +93,7 @@ public class FRGameClient implements FRMessageListener{
 		case STEER_STRAIGHT_PLAYER_2:
 		case STEER_STRAIGHT_PLAYER_3:
 			playerNo = FRMessageCodes.extractHeaderExtField(buffer[0]);
+			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - Steer Straight: P"+playerNo);
 			gameWorld.carHandler.cars.get(playerNo).steer = Steer.NONE;
 			break;
 		}
