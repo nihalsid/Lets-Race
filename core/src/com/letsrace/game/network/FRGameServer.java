@@ -1,14 +1,6 @@
 package com.letsrace.game.network;
 
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_DOWN;
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_UP;
-import static com.letsrace.game.network.FRMessageCodes.PING_DETECT_RES;
-import static com.letsrace.game.network.FRMessageCodes.SELECTED_CAR_0;
-import static com.letsrace.game.network.FRMessageCodes.SELECTED_CAR_1;
-import static com.letsrace.game.network.FRMessageCodes.SELECTED_CAR_2;
-import static com.letsrace.game.network.FRMessageCodes.SELECTED_CAR_3;
-import static com.letsrace.game.network.FRMessageCodes.TURN_LEFT;
-import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT;
+import static com.letsrace.game.network.FRMessageCodes.*;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -35,18 +27,20 @@ public class FRGameServer implements FRMessageListener {
 
 	@Override
 	public void onMessageRecieved(byte[] buffer, String senderParticipantId) {
+		byte msg[];
 		switch (buffer[0]) {
 		case PING_DETECT_RES: 
 			sessionData.get(senderParticipantId).ping = (int)(System.currentTimeMillis() - timeInMillis)/2;
 			Gdx.app.log(FRConstants.TAG, "Ping("+senderParticipantId+"):"+sessionData.get(senderParticipantId).ping);
 			break;
 		case ACCEL_DOWN:
-			break;
 		case ACCEL_UP:
-			break;
 		case TURN_LEFT:
-			break;
 		case TURN_RIGHT:
+		case STEER_STRAIGHT:
+			msg = new byte[1];
+			msg[0]=FRMessageCodes.convertToCorrespondingPlayerMessageCode(buffer[0], gameRef.playerNumber.get(senderParticipantId).intValue());
+			gameRef.googleServices.broadcastReliableMessage(msg);
 			break;
 		case SELECTED_CAR_0:
 		case SELECTED_CAR_1:
@@ -58,7 +52,7 @@ public class FRGameServer implements FRMessageListener {
 			checkCarAvailabilityAndReply(buffer[0], senderParticipantId);
 			if (isAllPickConfirmed()) {
 				measurePing();
-				byte msg[] = new byte[1];
+				msg = new byte[1];
 				msg[0] = FRMessageCodes.PROCEED_TO_GAME_SCREEN;
 				gameRef.googleServices.broadcastReliableMessage(msg);
 			}
@@ -107,7 +101,7 @@ public class FRGameServer implements FRMessageListener {
 	
 	public byte[] generateSyncPacket(){
 		int ctr = 0;
-		byte[] message = new byte[1+gameWorld.carHandler.cars.size()*16];
+		byte[] message = new byte[1+gameWorld.carHandler.cars.size()*20];
 		message[ctr++]=FRMessageCodes.RESYNC_HEAD;
 		for (int j=0; j < gameWorld.carHandler.cars.size();j++){
 			Car c = gameWorld.carHandler.cars.get(j);
@@ -123,6 +117,9 @@ public class FRGameServer implements FRMessageListener {
 			byte[] cBodyAngle = ByteBuffer.allocate(4).putFloat(c.getBodyAngle()).array();
 			for (int i=0;i<4;i++)
 				message[ctr++]=cBodyAngle[i];
+			byte[] cSpeed = ByteBuffer.allocate(4).putFloat(c.getSpeedKMH()).array();
+			for (int i=0;i<4;i++)
+				message[ctr++]=cSpeed[i];
 		}
 		return message;
 	}

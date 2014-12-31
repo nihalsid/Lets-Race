@@ -1,31 +1,7 @@
 package com.letsrace.game.network;
 
 
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_DOWN_PLAYER_0;
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_DOWN_PLAYER_1;
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_DOWN_PLAYER_2;
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_DOWN_PLAYER_3;
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_UP_PLAYER_0;
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_UP_PLAYER_1;
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_UP_PLAYER_2;
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_UP_PLAYER_3;
-import static com.letsrace.game.network.FRMessageCodes.CAR_PICK_CONFIRMED_PLAYER_0;
-import static com.letsrace.game.network.FRMessageCodes.CAR_PICK_CONFIRMED_PLAYER_1;
-import static com.letsrace.game.network.FRMessageCodes.CAR_PICK_CONFIRMED_PLAYER_2;
-import static com.letsrace.game.network.FRMessageCodes.CAR_PICK_CONFIRMED_PLAYER_3;
-import static com.letsrace.game.network.FRMessageCodes.PING_DETECT_REQ;
-import static com.letsrace.game.network.FRMessageCodes.PING_DETECT_RES;
-import static com.letsrace.game.network.FRMessageCodes.PROCEED_TO_GAME_SCREEN;
-import static com.letsrace.game.network.FRMessageCodes.REPICK_CAR;
-import static com.letsrace.game.network.FRMessageCodes.RESYNC_HEAD;
-import static com.letsrace.game.network.FRMessageCodes.TURN_LEFT_PLAYER_0;
-import static com.letsrace.game.network.FRMessageCodes.TURN_LEFT_PLAYER_1;
-import static com.letsrace.game.network.FRMessageCodes.TURN_LEFT_PLAYER_2;
-import static com.letsrace.game.network.FRMessageCodes.TURN_LEFT_PLAYER_3;
-import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_0;
-import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_1;
-import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_2;
-import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_3;
+import static com.letsrace.game.network.FRMessageCodes.*;
 
 import java.nio.ByteBuffer;
 
@@ -34,6 +10,9 @@ import com.letsrace.game.FRConstants;
 import com.letsrace.game.FRGameWorld;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.car.Car;
+import com.letsrace.game.car.Car.Accel;
+import com.letsrace.game.car.Car.Steer;
+
 public class FRGameClient implements FRMessageListener{
 	public FRGameWorld gameWorld;
 	public LetsRace gameRef;
@@ -48,6 +27,7 @@ public class FRGameClient implements FRMessageListener{
 	
 	@Override
 	public void onMessageRecieved(byte[] buffer, String participantId) {
+		int playerNo;
 		switch(buffer[0]){
 		case PING_DETECT_REQ:
 			byte[] msg = new byte[1];
@@ -55,31 +35,29 @@ public class FRGameClient implements FRMessageListener{
 			gameRef.googleServices.sendReliableMessage(msg, serverID);
 			break;
 		case ACCEL_DOWN_PLAYER_0:
-			break;
 		case ACCEL_DOWN_PLAYER_1:
-			break;
 		case ACCEL_DOWN_PLAYER_2:
-			break;
 		case ACCEL_DOWN_PLAYER_3:
+			playerNo= FRMessageCodes.extractHeaderExtField(buffer[0]);
+			gameWorld.carHandler.cars.get(playerNo).accelerate = Accel.BRAKE;
 			break;
 		case ACCEL_UP_PLAYER_0:
-			break;
 		case ACCEL_UP_PLAYER_1:
-			break;
 		case ACCEL_UP_PLAYER_2:
-			break;
 		case ACCEL_UP_PLAYER_3:
+			playerNo = FRMessageCodes.extractHeaderExtField(buffer[0]);
+			gameWorld.carHandler.cars.get(playerNo).accelerate = Accel.ACCELERATE;
 			break;
 		case CAR_PICK_CONFIRMED_PLAYER_0:
 		case CAR_PICK_CONFIRMED_PLAYER_1:
 		case CAR_PICK_CONFIRMED_PLAYER_2:
 		case CAR_PICK_CONFIRMED_PLAYER_3:
-			int playerNumber = FRMessageCodes.extractHeaderExtField(buffer[0]);
-			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - CarPickConfirmed: P"+playerNumber+", C:"+buffer[1]);
-			gameWorld.carHandler.addCar(playerNumber, buffer[1]);
-			if (playerNumber == gameRef.myPlayerNo){
+			playerNo = FRMessageCodes.extractHeaderExtField(buffer[0]);
+			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - CarPickConfirmed: P"+playerNo+", C:"+buffer[1]);
+			gameWorld.carHandler.addCar(playerNo, buffer[1]);
+			if (playerNo == gameRef.myPlayerNo){
 				Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - My car selection confirmed");
-				gameWorld.mapHandler.setupContactListener(gameWorld.carHandler.cars.get(playerNumber).body);
+				gameWorld.mapHandler.setupContactListener(gameWorld.carHandler.cars.get(playerNo).body);
 			}
 			break;
 		case PROCEED_TO_GAME_SCREEN:
@@ -91,20 +69,25 @@ public class FRGameClient implements FRMessageListener{
 			handleSyncPacket(buffer);
 			break;
 		case TURN_LEFT_PLAYER_0:
-			break;
 		case TURN_LEFT_PLAYER_1:
-			break;
 		case TURN_LEFT_PLAYER_2:
-			break;
 		case TURN_LEFT_PLAYER_3:
+			playerNo = FRMessageCodes.extractHeaderExtField(buffer[0]);
+			gameWorld.carHandler.cars.get(playerNo).steer = Steer.LEFT;
 			break;
 		case TURN_RIGHT_PLAYER_0:
-			break;
 		case TURN_RIGHT_PLAYER_1:
-			break;
 		case TURN_RIGHT_PLAYER_2:
-			break;
 		case TURN_RIGHT_PLAYER_3:
+			playerNo = FRMessageCodes.extractHeaderExtField(buffer[0]);
+			gameWorld.carHandler.cars.get(playerNo).steer = Steer.RIGHT;
+			break;
+		case STEER_STRAIGHT_PLAYER_0:
+		case STEER_STRAIGHT_PLAYER_1:
+		case STEER_STRAIGHT_PLAYER_2:
+		case STEER_STRAIGHT_PLAYER_3:
+			playerNo = FRMessageCodes.extractHeaderExtField(buffer[0]);
+			gameWorld.carHandler.cars.get(playerNo).steer = Steer.NONE;
 			break;
 		}
 	}
@@ -132,6 +115,11 @@ public class FRGameClient implements FRMessageListener{
 			}
 			float cBodyAngle=ByteBuffer.wrap(m).getFloat();
 			c.setTransform(posX, posY, cBodyAngle);
+			for (int i=0;i<4;i++){
+				m[i]=packet[ctr++];
+			}
+			float cSpeed=ByteBuffer.wrap(m).getFloat();
+			c.setSpeed(cSpeed);
 		}
 	}
 }
