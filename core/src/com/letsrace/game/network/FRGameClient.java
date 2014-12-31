@@ -1,13 +1,36 @@
 package com.letsrace.game.network;
 
 
+import static com.letsrace.game.network.FRMessageCodes.ACCEL_DOWN_PLAYER_0;
+import static com.letsrace.game.network.FRMessageCodes.ACCEL_DOWN_PLAYER_1;
+import static com.letsrace.game.network.FRMessageCodes.ACCEL_DOWN_PLAYER_2;
+import static com.letsrace.game.network.FRMessageCodes.ACCEL_DOWN_PLAYER_3;
+import static com.letsrace.game.network.FRMessageCodes.ACCEL_UP_PLAYER_0;
+import static com.letsrace.game.network.FRMessageCodes.ACCEL_UP_PLAYER_1;
+import static com.letsrace.game.network.FRMessageCodes.ACCEL_UP_PLAYER_2;
+import static com.letsrace.game.network.FRMessageCodes.ACCEL_UP_PLAYER_3;
+import static com.letsrace.game.network.FRMessageCodes.CAR_PICK_CONFIRMED_PLAYER_0;
+import static com.letsrace.game.network.FRMessageCodes.CAR_PICK_CONFIRMED_PLAYER_1;
+import static com.letsrace.game.network.FRMessageCodes.CAR_PICK_CONFIRMED_PLAYER_2;
+import static com.letsrace.game.network.FRMessageCodes.CAR_PICK_CONFIRMED_PLAYER_3;
+import static com.letsrace.game.network.FRMessageCodes.PING_DETECT_REQ;
+import static com.letsrace.game.network.FRMessageCodes.PING_DETECT_RES;
+import static com.letsrace.game.network.FRMessageCodes.PROCEED_TO_GAME_SCREEN;
+import static com.letsrace.game.network.FRMessageCodes.REPICK_CAR;
+import static com.letsrace.game.network.FRMessageCodes.RESYNC_HEAD;
+import static com.letsrace.game.network.FRMessageCodes.TURN_LEFT_PLAYER_0;
+import static com.letsrace.game.network.FRMessageCodes.TURN_LEFT_PLAYER_1;
+import static com.letsrace.game.network.FRMessageCodes.TURN_LEFT_PLAYER_2;
+import static com.letsrace.game.network.FRMessageCodes.TURN_LEFT_PLAYER_3;
+import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_0;
+import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_1;
+import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_2;
+import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_3;
+
 import com.badlogic.gdx.Gdx;
 import com.letsrace.game.FRConstants;
 import com.letsrace.game.FRGameWorld;
 import com.letsrace.game.LetsRace;
-
-import static com.letsrace.game.network.FRMessageCodes.*;
-
 public class FRGameClient implements FRMessageListener{
 	public FRGameWorld gameWorld;
 	public LetsRace gameRef;
@@ -23,6 +46,11 @@ public class FRGameClient implements FRMessageListener{
 	@Override
 	public void onMessageRecieved(byte[] buffer, String participantId) {
 		switch(buffer[0]){
+		case PING_DETECT_REQ:
+			byte[] msg = new byte[1];
+			msg[0] = PING_DETECT_RES;
+			gameRef.googleServices.sendReliableMessage(msg, serverID);
+			break;
 		case ACCEL_DOWN_PLAYER_0:
 			break;
 		case ACCEL_DOWN_PLAYER_1:

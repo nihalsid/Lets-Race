@@ -24,6 +24,7 @@ import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
 import com.google.android.gms.games.multiplayer.Participant;
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
@@ -583,13 +584,19 @@ public class AndroidLauncher extends AndroidApplication implements
 
 	public void sendReliableMessage(byte[] message, String participantID) {
 		Gdx.app.log(TAG, "Sending reliable message");
-		Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null,
+		if (participantID==mMyId)
+			messageHandler.onRealTimeMessageReceived(new RealTimeMessage(participantID, message, RealTimeMessage.RELIABLE));
+		else
+			Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null,
 				message, room.getRoomId(), participantID);
 	}
 
 	public void broadcastMessage(byte[] message) {
 		Gdx.app.log(TAG, "Sending broadcast message");
 		for (Participant p : mParticipants) {
+			if (p.getParticipantId()==mMyId)
+				messageHandler.onRealTimeMessageReceived(new RealTimeMessage(mMyId, message, RealTimeMessage.UNRELIABLE));
+			else	
 				Games.RealTimeMultiplayer.sendUnreliableMessage(
 						mGoogleApiClient, message, room.getRoomId(),
 						p.getParticipantId());
@@ -600,6 +607,9 @@ public class AndroidLauncher extends AndroidApplication implements
 	public void broadcastReliableMessage(byte[] message) {
 		Gdx.app.log(TAG, "Sending reliable broadcast message");
 		for (Participant p : mParticipants) {
+			if (p.getParticipantId()==mMyId)
+				messageHandler.onRealTimeMessageReceived(new RealTimeMessage(mMyId, message, RealTimeMessage.RELIABLE));
+			else
 				Games.RealTimeMultiplayer.sendReliableMessage(
 						mGoogleApiClient, null, message, room.getRoomId(),
 						p.getParticipantId());

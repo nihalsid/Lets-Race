@@ -6,6 +6,8 @@ public class FRMessageCodes {
 	public static final byte SELECTED_CAR_2 = (byte) 0x82;
 	public static final byte SELECTED_CAR_3 = (byte) 0x83;
 	public static final byte PROCEED_TO_GAME_SCREEN = (byte) 0x08;
+	public static final byte PING_DETECT_REQ = (byte)0x40;//TODO:Review code
+	public static final byte PING_DETECT_RES = (byte)0x90;//TODO:Review code
 	public static final byte CAR_PICK_CONFIRMED_PLAYER_0 = (byte) 0x10;
 	public static final byte CAR_PICK_CONFIRMED_PLAYER_1 = (byte) 0x11;
 	public static final byte CAR_PICK_CONFIRMED_PLAYER_2 = (byte) 0x12;
