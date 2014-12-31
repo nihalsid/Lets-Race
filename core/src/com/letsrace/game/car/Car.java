@@ -13,8 +13,8 @@ import com.letsrace.game.car.Wheel.WheelType;
 
 public class Car {
 	public Body body;
-	float width, length, angle, maxSteerAngle, maxSpeed, maxRevSpeed, power;
-	float wheelAngle;
+	public float width, length, angle, maxSteerAngle, maxSpeed, maxRevSpeed, power;
+	public float wheelAngle;
 	public Steer steer;
 	public Accel accelerate;
 	public List<Wheel> wheels;
@@ -113,6 +113,10 @@ public class Car {
 		float len = velocity.len();
 		return (len / 1000) * 3600;
 	}
+	
+	public float getBodyAngle(){
+		return this.body.getAngle();
+	}
 
 	public void setSpeed(float speed) {
 		/*
@@ -196,4 +200,9 @@ public class Car {
 		}
 
 	}
+
+	public void setTransform(float posX, float posY, float cBodyAngle) {
+		this.body.setTransform(posX, posY, cBodyAngle);
+	}
+
 }

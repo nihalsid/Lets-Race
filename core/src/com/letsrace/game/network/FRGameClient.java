@@ -27,10 +27,13 @@ import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_1;
 import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_2;
 import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_3;
 
+import java.nio.ByteBuffer;
+
 import com.badlogic.gdx.Gdx;
 import com.letsrace.game.FRConstants;
 import com.letsrace.game.FRGameWorld;
 import com.letsrace.game.LetsRace;
+import com.letsrace.game.car.Car;
 public class FRGameClient implements FRMessageListener{
 	public FRGameWorld gameWorld;
 	public LetsRace gameRef;
@@ -85,6 +88,7 @@ public class FRGameClient implements FRMessageListener{
 		case REPICK_CAR:
 			break;
 		case RESYNC_HEAD:
+			handleSyncPacket(buffer);
 			break;
 		case TURN_LEFT_PLAYER_0:
 			break;
@@ -102,6 +106,32 @@ public class FRGameClient implements FRMessageListener{
 			break;
 		case TURN_RIGHT_PLAYER_3:
 			break;
+		}
+	}
+	
+	public void handleSyncPacket(byte[] packet){
+		int ctr=1;
+		for (int j=0;j<gameWorld.carHandler.cars.size();j++){
+			Car c = gameWorld.carHandler.cars.get(j);
+			byte[] m = new byte[4];
+			for (int i=0;i<4;i++){
+				m[i]=packet[ctr++];
+			}
+			float posX=ByteBuffer.wrap(m).getFloat();
+			for (int i=0;i<4;i++){
+				m[i]=packet[ctr++];
+			}
+			float posY=ByteBuffer.wrap(m).getFloat();
+			for (int i=0;i<4;i++){
+				m[i]=packet[ctr++];
+			}
+			float wAngle=ByteBuffer.wrap(m).getFloat();
+			c.wheelAngle = wAngle;
+			for (int i=0;i<4;i++){
+				m[i]=packet[ctr++];
+			}
+			float cBodyAngle=ByteBuffer.wrap(m).getFloat();
+			c.setTransform(posX, posY, cBodyAngle);
 		}
 	}
 }

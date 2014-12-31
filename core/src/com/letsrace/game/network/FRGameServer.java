@@ -1,8 +1,8 @@
 package com.letsrace.game.network;
 
 import static com.letsrace.game.network.FRMessageCodes.ACCEL_DOWN;
-import static com.letsrace.game.network.FRMessageCodes.PING_DETECT_RES;
 import static com.letsrace.game.network.FRMessageCodes.ACCEL_UP;
+import static com.letsrace.game.network.FRMessageCodes.PING_DETECT_RES;
 import static com.letsrace.game.network.FRMessageCodes.SELECTED_CAR_0;
 import static com.letsrace.game.network.FRMessageCodes.SELECTED_CAR_1;
 import static com.letsrace.game.network.FRMessageCodes.SELECTED_CAR_2;
@@ -10,12 +10,14 @@ import static com.letsrace.game.network.FRMessageCodes.SELECTED_CAR_3;
 import static com.letsrace.game.network.FRMessageCodes.TURN_LEFT;
 import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT;
 
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.letsrace.game.FRConstants;
 import com.letsrace.game.FRGameWorld;
 import com.letsrace.game.LetsRace;
+import com.letsrace.game.car.Car;
 
 public class FRGameServer implements FRMessageListener {
 	FRGameWorld gameWorld;
@@ -102,5 +104,27 @@ public class FRGameServer implements FRMessageListener {
 		gameRef.googleServices.broadcastReliableMessage(msg);
 		timeInMillis = System.currentTimeMillis();
 	}
-
+	
+	public byte[] generateSyncPacket(){
+		int ctr = 0;
+		byte[] message = new byte[1+gameWorld.carHandler.cars.size()*16];
+		message[ctr++]=FRMessageCodes.RESYNC_HEAD;
+		for (int j=0; j < gameWorld.carHandler.cars.size();j++){
+			Car c = gameWorld.carHandler.cars.get(j);
+			byte[] posX = ByteBuffer.allocate(4).putFloat(c.getWorldPosition().x).array();
+			for (int i=0;i<4;i++)
+				message[ctr++]=posX[i];
+			byte[] posY = ByteBuffer.allocate(4).putFloat(c.getWorldPosition().y).array();
+			for (int i=0;i<4;i++)
+				message[ctr++]=posY[i];
+			byte[] wAngle = ByteBuffer.allocate(4).putFloat(c.wheelAngle).array();
+			for (int i=0;i<4;i++)
+				message[ctr++]=wAngle[i];
+			byte[] cBodyAngle = ByteBuffer.allocate(4).putFloat(c.getBodyAngle()).array();
+			for (int i=0;i<4;i++)
+				message[ctr++]=cBodyAngle[i];
+		}
+		return message;
+	}
+	
 }
