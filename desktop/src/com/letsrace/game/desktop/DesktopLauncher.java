@@ -98,9 +98,4 @@ public class DesktopLauncher implements FRGoogleServices {
 		return false;
 	}
 
-	@Override
-	public boolean isSignedIn() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 }
