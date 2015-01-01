@@ -31,6 +31,7 @@ import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListene
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.android.gms.plus.Plus;
 import com.google.example.games.basegameutils.BaseGameUtils;
+import com.letsrace.game.Assets;
 import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.network.FRGoogleServices;
@@ -93,7 +94,6 @@ public class AndroidLauncher extends AndroidApplication implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		// Create the Google Api Client with access to Plus and Games
 		mGoogleApiClient = new GoogleApiClient.Builder(this)
 				.addConnectionCallbacks(this)
@@ -107,6 +107,12 @@ public class AndroidLauncher extends AndroidApplication implements
 		game = new LetsRace(this);
 		messageHandler = new FRMessageHandler();
 		initialize(game, config);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
 	}
 
 	public void initiateSignIn() {
@@ -200,13 +206,13 @@ public class AndroidLauncher extends AndroidApplication implements
 						parentActivity.finish();
 					}
 				};
-				BaseGameUtils.showActivityResultError(this, listener,
-						requestCode, responseCode, R.string.sign_in_error,
-						R.string.other_error);
+				BaseGameUtils.showActivityResultError(this, listener, requestCode,
+						responseCode, R.string.sign_in_error, responseCode);
 			}
 			break;
 		}
 		super.onActivityResult(requestCode, responseCode, intent);
+
 	}
 
 	// Handle the result of the "Select players UI" we launched when the user
@@ -291,6 +297,7 @@ public class AndroidLauncher extends AndroidApplication implements
 		// if we're in a room, leave it.
 		leaveRoom();
 		super.onStop();
+		Assets.dispose();
 	}
 
 	// Activity just got to the foreground. We switch to the wait screen because
@@ -472,8 +479,7 @@ public class AndroidLauncher extends AndroidApplication implements
 				game.moveToScreen(GameState.MENU);
 			}
 		};
-		BaseGameUtils.makeSimpleDialog(this, getString(R.string.other_error),
-				listener).show();
+		BaseGameUtils.makeSimpleDialog(this, getString(R.string.other_error),listener).show();
 	}
 
 	// Called when room has been created
@@ -630,4 +636,8 @@ public class AndroidLauncher extends AndroidApplication implements
 		messageHandler.setClientMessageListener(listener);
 	}
 
+	@Override
+	public boolean isSignedIn() {
+		return mGoogleApiClient != null && mGoogleApiClient.isConnected();
+	}
 }

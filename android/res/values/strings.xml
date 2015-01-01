@@ -4,5 +4,6 @@
     <string name="app_name">Lets Race!</string>
     <string name="sign_in_error">Sign in error</string>
     <string name="other_error">Some other error</string>
-
+	<string name="app_id">171814158523</string>
+	
 </resources>

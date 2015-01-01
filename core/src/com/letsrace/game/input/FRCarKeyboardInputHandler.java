@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.letsrace.game.car.Car;
 import com.letsrace.game.car.Car.Accel;
 import com.letsrace.game.car.Car.Steer;
-import com.letsrace.game.network.FRMessageCodes;
 
 public class FRCarKeyboardInputHandler extends FRInputAdapter{
 	public Car carRef;
