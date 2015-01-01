@@ -29,16 +29,21 @@ public class FRMessageCodes {
 	public static final byte TURN_LEFT_PLAYER_1 = (byte) 0x39;
 	public static final byte TURN_LEFT_PLAYER_2 = (byte) 0x3A;
 	public static final byte TURN_LEFT_PLAYER_3 = (byte) 0x3B;
-	public static final byte TURN_RIGHT = (byte) 0x40;
-	public static final byte TURN_RIGHT_PLAYER_0 = (byte) 0xC0;
-	public static final byte TURN_RIGHT_PLAYER_1 = (byte) 0xC1;
-	public static final byte TURN_RIGHT_PLAYER_2 = (byte) 0xC2;
-	public static final byte TURN_RIGHT_PLAYER_3 = (byte) 0xC3;
-	public static final byte STEER_STRAIGHT = (byte) 0x48;
-	public static final byte STEER_STRAIGHT_PLAYER_0 = (byte) 0xD0;
-	public static final byte STEER_STRAIGHT_PLAYER_1 = (byte) 0xD1;
-	public static final byte STEER_STRAIGHT_PLAYER_2 = (byte) 0xD2;
-	public static final byte STEER_STRAIGHT_PLAYER_3 = (byte) 0xD3;
+	public static final byte TURN_RIGHT = (byte) 0xC0;
+	public static final byte TURN_RIGHT_PLAYER_0 = (byte) 0x40;
+	public static final byte TURN_RIGHT_PLAYER_1 = (byte) 0x41;
+	public static final byte TURN_RIGHT_PLAYER_2 = (byte) 0x42;
+	public static final byte TURN_RIGHT_PLAYER_3 = (byte) 0x43;
+	public static final byte STEER_STRAIGHT = (byte) 0xC8;
+	public static final byte STEER_STRAIGHT_PLAYER_0 = (byte) 0x48;
+	public static final byte STEER_STRAIGHT_PLAYER_1 = (byte) 0x49;
+	public static final byte STEER_STRAIGHT_PLAYER_2 = (byte) 0x4A;
+	public static final byte STEER_STRAIGHT_PLAYER_3 = (byte) 0x4B;
+	public static final byte NO_ACCELERATE = (byte) 0xD0;
+	public static final byte NO_ACCELERATE_PLAYER_0 = (byte) 0x50;
+	public static final byte NO_ACCELERATE_PLAYER_1 = (byte) 0x51;
+	public static final byte NO_ACCELERATE_PLAYER_2 = (byte) 0x52;
+	public static final byte NO_ACCELERATE_PLAYER_3 = (byte) 0x53;
 	
 	public static byte extractHeaderExtField(byte msg){
 		return (byte) (msg&0x07);

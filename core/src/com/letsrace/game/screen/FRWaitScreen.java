@@ -18,7 +18,7 @@ public class FRWaitScreen extends ScreenAdapter{
 		gameRef = letsRace;
 		gameRef.stage.clear();
 		Gdx.input.setInputProcessor(gameRef.stage);
-		Image image = new Image(gameRef.skin.getDrawable("wait-screen-back"));
+		Image image = new Image(gameRef.skin.getDrawable("background"));
 		image.setWidth(Gdx.graphics.getWidth());
 		image.setHeight(Gdx.graphics.getHeight());
 		image.setZIndex(1);

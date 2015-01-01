@@ -9,10 +9,8 @@ public class FRConstants {
 	public final static int GUI_WIDTH = 480;
 	public final static int GUI_HIEGHT = 800;
 	public static float GUI_SCALE_WIDTH;
-	public static float GUI_SCALE_HEIGHT;
 	public static final String TAG = "Lets-Race!";
 	public static void initializeDynamicConstants(){
-		GUI_SCALE_HEIGHT = ((float)Gdx.graphics.getHeight()/GUI_HIEGHT);
 		GUI_SCALE_WIDTH = ((float)Gdx.graphics.getWidth()/GUI_WIDTH);
 	}
 }

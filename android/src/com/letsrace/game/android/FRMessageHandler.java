@@ -1,5 +1,6 @@
 package com.letsrace.game.android;
 
+
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
 import com.letsrace.game.network.FRMessageListener;
@@ -25,7 +26,6 @@ public class FRMessageHandler implements RealTimeMessageReceivedListener {
 	@Override
 	public void onRealTimeMessageReceived(RealTimeMessage rtm) {
 		byte[] buf = rtm.getMessageData();
-		//Log.d(AndroidLauncher.TAG, "Message received: " + Arrays.toString(buf));
 		if ((buf[0] & TO_SERVER) == TO_SERVER)
 			serverListener.onMessageRecieved(buf, rtm.getSenderParticipantId());
 		else

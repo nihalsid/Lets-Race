@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.android.gms.common.ConnectionResult;
@@ -23,17 +24,19 @@ import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
 import com.google.android.gms.games.multiplayer.Participant;
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.android.gms.plus.Plus;
 import com.google.example.games.basegameutils.BaseGameUtils;
-import com.letsrace.game.Assets;
 import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.network.FRGoogleServices;
 import com.letsrace.game.network.FRMessageListener;
+import com.letsrace.game.screen.FRMultiplayerMenuScreen;
+import com.letsrace.game.unused.FRAssets;
 
 public class AndroidLauncher extends AndroidApplication implements
 		FRGoogleServices, GoogleApiClient.ConnectionCallbacks,
@@ -53,7 +56,6 @@ public class AndroidLauncher extends AndroidApplication implements
 	// Request code used to invoke sign in user interactions.
 	private static final int RC_SIGN_IN = 9001;
 
-	// Client used to interact with Google APIs.
 	private GoogleApiClient mGoogleApiClient;
 
 	// Are we currently resolving a connection failure?
@@ -100,6 +102,8 @@ public class AndroidLauncher extends AndroidApplication implements
 				.addScope(Games.SCOPE_GAMES).build();
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		config.useAccelerometer = true;
+		config.useCompass = true;
 		game = new LetsRace(this);
 		messageHandler = new FRMessageHandler();
 		initialize(game, config);
@@ -151,7 +155,7 @@ public class AndroidLauncher extends AndroidApplication implements
 	public void onActivityResult(int requestCode, int responseCode,
 			Intent intent) {
 		super.onActivityResult(requestCode, responseCode, intent);
-
+		Gdx.app.log(TAG, "On activity result: " + requestCode);
 		switch (requestCode) {
 		case RC_SELECT_PLAYERS:
 			// we got the result from the "select players" UI -- ready to create
@@ -201,7 +205,7 @@ public class AndroidLauncher extends AndroidApplication implements
 						parentActivity.finish();
 					}
 				};
-				BaseGameUtils.showActivityResultError(this, listener,requestCode,
+				BaseGameUtils.showActivityResultError(this, listener, requestCode,
 						responseCode, R.string.sign_in_error, responseCode);
 			}
 			break;
@@ -292,7 +296,7 @@ public class AndroidLauncher extends AndroidApplication implements
 		// if we're in a room, leave it.
 		leaveRoom();
 		super.onStop();
-		Assets.dispose();
+		FRAssets.dispose();
 	}
 
 	// Activity just got to the foreground. We switch to the wait screen because
@@ -397,7 +401,14 @@ public class AndroidLauncher extends AndroidApplication implements
 			}
 		}
 		// TODO: Pop up already signed in
-		game.moveToScreen(GameState.MENU);
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				if(game.gameState==GameState.MULTIPLAYER_MENU){
+					((FRMultiplayerMenuScreen)game.getScreen()).enableSignedInButtons();
+				}
+			}
+		});
 	}
 
 	@Override
@@ -472,8 +483,7 @@ public class AndroidLauncher extends AndroidApplication implements
 			public void onClick(DialogInterface arg0, int arg1) {
 			}
 		};
-		BaseGameUtils.makeSimpleDialog(this, getString(R.string.other_error),
-				"listener");
+		BaseGameUtils.makeSimpleDialog(this, getString(R.string.other_error),listener).show();
 	}
 
 	// Called when room has been created
@@ -585,17 +595,38 @@ public class AndroidLauncher extends AndroidApplication implements
 	}
 
 	public void sendReliableMessage(byte[] message, String participantID) {
-		Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null,
-				message, room.getRoomId(), participantID);
+		if (participantID.equals(mMyId)) {
+			Gdx.app.log(TAG, "Manual trigger onRealTimeMessageRecieved()");
+			messageHandler.onRealTimeMessageReceived(new RealTimeMessage(
+					participantID, message, RealTimeMessage.RELIABLE));
+		} else
+			Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,
+					null, message, room.getRoomId(), participantID);
 	}
 
 	public void broadcastMessage(byte[] message) {
 		for (Participant p : mParticipants) {
-			if (!p.getParticipantId().equals(mMyId)) {
+			if (p.getParticipantId().equals(mMyId)) {
+				Gdx.app.log(TAG, "Manual trigger onRealTimeMessageRecieved()");
+				messageHandler.onRealTimeMessageReceived(new RealTimeMessage(
+						mMyId, message, RealTimeMessage.UNRELIABLE));
+			} else
 				Games.RealTimeMultiplayer.sendUnreliableMessage(
 						mGoogleApiClient, message, room.getRoomId(),
 						p.getParticipantId());
-			}
+		}
+	}
+
+	@Override
+	public void broadcastReliableMessage(byte[] message) {
+		for (Participant p : mParticipants) {
+			if (p.getParticipantId().equals(mMyId)) {
+				Gdx.app.log(TAG, "Manual trigger onRealTimeMessageRecieved()");
+				messageHandler.onRealTimeMessageReceived(new RealTimeMessage(
+						mMyId, message, RealTimeMessage.RELIABLE));
+			} else
+				Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,
+						null, message, room.getRoomId(), p.getParticipantId());
 		}
 	}
 
@@ -612,10 +643,5 @@ public class AndroidLauncher extends AndroidApplication implements
 	@Override
 	public boolean isSignedIn() {
 		return mGoogleApiClient != null && mGoogleApiClient.isConnected();
-	}
-
-	@Override
-	public void broadcastReliableMessage(byte[] message) {
-		
 	}
 }

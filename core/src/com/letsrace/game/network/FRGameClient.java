@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.letsrace.game.FRConstants;
+import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.FRGameWorld;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.car.Car;
@@ -51,6 +52,15 @@ public class FRGameClient implements FRMessageListener{
 			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - AccelUp: P"+playerNo);
 			gameWorld.carHandler.cars.get(playerNo).accelerate = Accel.ACCELERATE;
 			break;
+		case NO_ACCELERATE_PLAYER_0:
+		case NO_ACCELERATE_PLAYER_1:
+		case NO_ACCELERATE_PLAYER_2:
+		case NO_ACCELERATE_PLAYER_3:
+			playerNo = FRMessageCodes.extractHeaderExtField(buffer[0]);
+			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - AccelNone: P"+playerNo);
+			gameWorld.carHandler.cars.get(playerNo).accelerate = Accel.NONE;
+			break;
+			
 		case CAR_PICK_CONFIRMED_PLAYER_0:
 		case CAR_PICK_CONFIRMED_PLAYER_1:
 		case CAR_PICK_CONFIRMED_PLAYER_2:
@@ -65,6 +75,12 @@ public class FRGameClient implements FRMessageListener{
 			break;
 		case PROCEED_TO_GAME_SCREEN:
 			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - ProceedToGameScreen");
+			Gdx.app.postRunnable(new Runnable() {
+				@Override
+				public void run() {
+					gameRef.moveToScreen(GameState.GAME_SCREEN);
+				}
+			});
 			break;
 		case REPICK_CAR:
 			break;

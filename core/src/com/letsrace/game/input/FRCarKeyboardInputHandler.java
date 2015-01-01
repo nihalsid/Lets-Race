@@ -1,12 +1,12 @@
 package com.letsrace.game.input;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.letsrace.game.car.Car;
 import com.letsrace.game.car.Car.Accel;
 import com.letsrace.game.car.Car.Steer;
 
-public class FRCarKeyboardInputHandler extends InputAdapter{
+public class FRCarKeyboardInputHandler extends FRInputAdapter{
 	public Car carRef;
 	
 	public FRCarKeyboardInputHandler(Car car){
@@ -29,7 +29,32 @@ public class FRCarKeyboardInputHandler extends InputAdapter{
 		}
 		return false;
 	}
+	
+	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+		carRef.accelerate = Accel.BRAKE;
+		return true;	}
 
+	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
+		carRef.accelerate = Accel.ACCELERATE;
+		return true;
+	}
+
+	float lastX;
+	public void handleAccelerometer(){
+		final float NOISE = 2f;
+		float x = Gdx.input.getAccelerometerX();
+		if (x<=NOISE && carRef.steer!=Steer.RIGHT){
+			carRef.steer = Steer.RIGHT;
+		}
+		if(x>=-NOISE&&carRef.steer!=Steer.LEFT){
+			carRef.steer = Steer.LEFT;
+		}
+		if(x<-NOISE&&x>NOISE&&carRef.steer!=Steer.NONE){
+			carRef.steer = Steer.NONE;
+		}
+	}
+	
+	
 	public boolean keyUp(int keycode) {
 		if (keycode == Input.Keys.DPAD_UP) {
 			carRef.accelerate = Accel.ACCELERATE;
