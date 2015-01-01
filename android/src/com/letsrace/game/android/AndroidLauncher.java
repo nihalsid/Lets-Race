@@ -102,6 +102,8 @@ public class AndroidLauncher extends AndroidApplication implements
 				.addScope(Games.SCOPE_GAMES).build();
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		config.useAccelerometer = true;
+		config.useCompass = true;
 		game = new LetsRace(this);
 		messageHandler = new FRMessageHandler();
 		initialize(game, config);
@@ -148,7 +150,7 @@ public class AndroidLauncher extends AndroidApplication implements
 	public void onActivityResult(int requestCode, int responseCode,
 			Intent intent) {
 		super.onActivityResult(requestCode, responseCode, intent);
-		Gdx.app.log(TAG, "On activity result: "+requestCode);
+		Gdx.app.log(TAG, "On activity result: " + requestCode);
 		switch (requestCode) {
 		case RC_SELECT_PLAYERS:
 			// we got the result from the "select players" UI -- ready to create
@@ -583,20 +585,22 @@ public class AndroidLauncher extends AndroidApplication implements
 	}
 
 	public void sendReliableMessage(byte[] message, String participantID) {
-		Gdx.app.log(TAG, "Sending reliable message");
-		if (participantID==mMyId)
-			messageHandler.onRealTimeMessageReceived(new RealTimeMessage(participantID, message, RealTimeMessage.RELIABLE));
-		else
-			Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null,
-				message, room.getRoomId(), participantID);
+		if (participantID.equals(mMyId)) {
+			Gdx.app.log(TAG, "Manual trigger onRealTimeMessageRecieved()");
+			messageHandler.onRealTimeMessageReceived(new RealTimeMessage(
+					participantID, message, RealTimeMessage.RELIABLE));
+		} else
+			Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,
+					null, message, room.getRoomId(), participantID);
 	}
 
 	public void broadcastMessage(byte[] message) {
-		Gdx.app.log(TAG, "Sending broadcast message");
 		for (Participant p : mParticipants) {
-			if (p.getParticipantId()==mMyId)
-				messageHandler.onRealTimeMessageReceived(new RealTimeMessage(mMyId, message, RealTimeMessage.UNRELIABLE));
-			else	
+			if (p.getParticipantId().equals(mMyId)) {
+				Gdx.app.log(TAG, "Manual trigger onRealTimeMessageRecieved()");
+				messageHandler.onRealTimeMessageReceived(new RealTimeMessage(
+						mMyId, message, RealTimeMessage.UNRELIABLE));
+			} else
 				Games.RealTimeMultiplayer.sendUnreliableMessage(
 						mGoogleApiClient, message, room.getRoomId(),
 						p.getParticipantId());
@@ -605,14 +609,14 @@ public class AndroidLauncher extends AndroidApplication implements
 
 	@Override
 	public void broadcastReliableMessage(byte[] message) {
-		Gdx.app.log(TAG, "Sending reliable broadcast message");
 		for (Participant p : mParticipants) {
-			if (p.getParticipantId()==mMyId)
-				messageHandler.onRealTimeMessageReceived(new RealTimeMessage(mMyId, message, RealTimeMessage.RELIABLE));
-			else
-				Games.RealTimeMultiplayer.sendReliableMessage(
-						mGoogleApiClient, null, message, room.getRoomId(),
-						p.getParticipantId());
+			if (p.getParticipantId().equals(mMyId)) {
+				Gdx.app.log(TAG, "Manual trigger onRealTimeMessageRecieved()");
+				messageHandler.onRealTimeMessageReceived(new RealTimeMessage(
+						mMyId, message, RealTimeMessage.RELIABLE));
+			} else
+				Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,
+						null, message, room.getRoomId(), p.getParticipantId());
 		}
 	}
 

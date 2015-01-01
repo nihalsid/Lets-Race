@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.letsrace.game.FRConstants;
+import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.FRGameWorld;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.car.Car;
@@ -65,6 +66,12 @@ public class FRGameClient implements FRMessageListener{
 			break;
 		case PROCEED_TO_GAME_SCREEN:
 			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - ProceedToGameScreen");
+			Gdx.app.postRunnable(new Runnable() {
+				@Override
+				public void run() {
+					gameRef.moveToScreen(GameState.GAME_SCREEN);
+				}
+			});
 			break;
 		case REPICK_CAR:
 			break;

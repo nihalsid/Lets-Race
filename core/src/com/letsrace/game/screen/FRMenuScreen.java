@@ -35,7 +35,7 @@ public class FRMenuScreen extends ScreenAdapter {
 		letsRace.stage.addActor(generateTextButton("Challenge friends",
 				new ClickListener() {
 					public void clicked(InputEvent event, float x, float y) {
-
+						
 					}
 				}, --buttonCtr));
 		letsRace.stage.addActor(generateTextButton("Check invites", new ClickListener() {
@@ -58,9 +58,6 @@ public class FRMenuScreen extends ScreenAdapter {
 		gameRef.stage.draw();
 	}
 
-	public void dispose() {
-		Gdx.app.log(FRConstants.TAG, "Menu: Dispose()");
-	}
 	
 	private TextButton generateTextButton(String text, ClickListener listener,
 			int buttonNumber) {
