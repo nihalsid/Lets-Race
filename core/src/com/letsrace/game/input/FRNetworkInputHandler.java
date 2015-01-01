@@ -38,14 +38,14 @@ public class FRNetworkInputHandler extends FRInputAdapter{
 	
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 		byte[] msg = new byte[1];
-		msg[0] = FRMessageCodes.ACCEL_DOWN;
+		msg[0] = FRMessageCodes.ACCEL_UP;
 		networkServices.sendReliableMessage(msg, serverID);
 		return true;
 	}
 
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 		byte[] msg = new byte[1];
-		msg[0] = FRMessageCodes.ACCEL_UP;
+		msg[0] = FRMessageCodes.NO_ACCELERATE;
 		networkServices.sendReliableMessage(msg, serverID);
 		return true;
 

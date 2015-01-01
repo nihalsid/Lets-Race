@@ -52,6 +52,15 @@ public class FRGameClient implements FRMessageListener{
 			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - AccelUp: P"+playerNo);
 			gameWorld.carHandler.cars.get(playerNo).accelerate = Accel.ACCELERATE;
 			break;
+		case NO_ACCELERATE_PLAYER_0:
+		case NO_ACCELERATE_PLAYER_1:
+		case NO_ACCELERATE_PLAYER_2:
+		case NO_ACCELERATE_PLAYER_3:
+			playerNo = FRMessageCodes.extractHeaderExtField(buffer[0]);
+			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - AccelNone: P"+playerNo);
+			gameWorld.carHandler.cars.get(playerNo).accelerate = Accel.NONE;
+			break;
+			
 		case CAR_PICK_CONFIRMED_PLAYER_0:
 		case CAR_PICK_CONFIRMED_PLAYER_1:
 		case CAR_PICK_CONFIRMED_PLAYER_2:

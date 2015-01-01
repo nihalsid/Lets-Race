@@ -2,6 +2,7 @@ package com.letsrace.game.network;
 
 import static com.letsrace.game.network.FRMessageCodes.ACCEL_DOWN;
 import static com.letsrace.game.network.FRMessageCodes.ACCEL_UP;
+import static com.letsrace.game.network.FRMessageCodes.NO_ACCELERATE;
 import static com.letsrace.game.network.FRMessageCodes.PING_DETECT_RES;
 import static com.letsrace.game.network.FRMessageCodes.SELECTED_CAR_0;
 import static com.letsrace.game.network.FRMessageCodes.SELECTED_CAR_1;
@@ -48,6 +49,7 @@ public class FRGameServer implements FRMessageListener {
 			break;
 		case ACCEL_DOWN:
 		case ACCEL_UP:
+		case NO_ACCELERATE:
 		case TURN_LEFT:
 		case TURN_RIGHT:
 		case STEER_STRAIGHT:
