@@ -54,13 +54,4 @@ public class FRGameScreen extends ScreenAdapter{
 		gameWorldRef.update(delta);
 	}
 
-	@Override
-	public void pause () {
-		//TODO Add pause implementation
-	}
-
-	@Override
-	public void resume () {
-		//TODO Add pause resume implementation
-	}
 }

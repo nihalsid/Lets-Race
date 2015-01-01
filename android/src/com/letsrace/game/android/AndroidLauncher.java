@@ -35,7 +35,8 @@ import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.network.FRGoogleServices;
 import com.letsrace.game.network.FRMessageListener;
-import com.letsrace.game.screen.FRAssets;
+import com.letsrace.game.screen.FRMultiplayerMenuScreen;
+import com.letsrace.game.unused.FRAssets;
 
 public class AndroidLauncher extends AndroidApplication implements
 		FRGoogleServices, GoogleApiClient.ConnectionCallbacks,
@@ -402,7 +403,14 @@ public class AndroidLauncher extends AndroidApplication implements
 			}
 		}
 		// TODO: Pop up already signed in
-		game.moveToScreen(GameState.MENU);
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				if(game.gameState==GameState.MULTIPLAYER_MENU){
+					((FRMultiplayerMenuScreen)game.getScreen()).enableSignedInButtons();
+				}
+			}
+		});
 	}
 
 	@Override

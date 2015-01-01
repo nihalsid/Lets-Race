@@ -2,73 +2,69 @@ package com.letsrace.game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.letsrace.game.FRConstants;
 import com.letsrace.game.LetsRace;
-import com.letsrace.game.OverlapTester;
 
 public class FRMultiplayerMenuScreen extends ScreenAdapter {
-
-	private LetsRace gameRef;
-	SpriteBatch batch;
-	Sprite quickrace;
-	Sprite inviteplayers;
-	Sprite checkinvites;
-	Sprite background;
-	Sprite signIn;
-	Sprite signInPressed;
-
-	Rectangle qrButton;
-	Rectangle inviteButton;
-	Rectangle checkInvitesButton;
-	Rectangle signInButton;
-
-	Camera camera;
-	Vector3 touchPoint;
-
+	LetsRace gameRef;
+	Image quickrace;
+	Image inviteplayers;
+	Image checkinvites;
+	TextButton signIn;
+	
 	public FRMultiplayerMenuScreen(LetsRace letsRace) {
 		Gdx.app.log(FRConstants.TAG, "Menu: Constructor");
 		gameRef = letsRace;
-		batch = new SpriteBatch();
-		quickrace = FRAssets.quickraceButton;
-		inviteplayers = FRAssets.invitefriendsButton;
-		checkinvites = FRAssets.checkInvitesButton;
-		background = FRAssets.background;
-		signIn = FRAssets.signIn;
-		signInPressed = FRAssets.signInPressed;
+		gameRef.stage.clear();
+		
+		quickrace = new Image(gameRef.skin.getDrawable("quickRaceButton"));
+		inviteplayers=new Image(gameRef.skin.getDrawable("inviteFriendsButton"));
+		checkinvites=new Image(gameRef.skin.getDrawable("checkInvitesButton"));;
+		Image background=new Image(gameRef.skin.getDrawable("background"));;
+		TextButtonStyle style = new TextButtonStyle(gameRef.skin.getDrawable("signIn"), gameRef.skin.getDrawable("signInPressed"), null, gameRef.font);
+		signIn=new TextButton("", style);
+		
+		signIn.setSize(signIn.getWidth()*FRConstants.GUI_SCALE_WIDTH,signIn.getHeight()*FRConstants.GUI_SCALE_WIDTH);
+		signIn.setPosition((1.375f*Gdx.graphics.getWidth())/6, 0.3f*Gdx.graphics.getHeight());
+		signIn.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				gameRef.googleServices.initiateSignIn();
+			}
+		});
+		
+		checkinvites.setSize(checkinvites.getWidth()*FRConstants.GUI_SCALE_WIDTH,checkinvites.getHeight()*FRConstants.GUI_SCALE_WIDTH);
+		checkinvites.setPosition(0, 0.05f*Gdx.graphics.getHeight());
+		
+		inviteplayers.setSize(inviteplayers.getWidth()*FRConstants.GUI_SCALE_WIDTH,inviteplayers.getHeight()*FRConstants.GUI_SCALE_WIDTH);
+		inviteplayers.setPosition(Gdx.graphics.getWidth()-inviteplayers.getWidth(), 0.17f*Gdx.graphics.getHeight());
 
-		camera = new OrthographicCamera(6, 10);
-		camera.position.set(camera.viewportWidth / 2f,
-				camera.viewportHeight / 2f, 0);
-		camera.update();
-		batch.setProjectionMatrix(camera.combined);
+		quickrace.setSize(quickrace.getWidth()*FRConstants.GUI_SCALE_WIDTH,quickrace.getHeight()*FRConstants.GUI_SCALE_WIDTH);
+		quickrace.setPosition(0, 0.29f*Gdx.graphics.getHeight());
+		quickrace.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				gameRef.googleServices.startQuickGame();
+			}
+		});
+	
+		background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		signIn.setPosition(1.375f, 3f);
-		signIn.setSize(3.25f, 1.25f);
-		signInButton = new Rectangle(1.375f, 3f, 3.25f, 1.25f);
-
-		checkinvites.setPosition(0, 0.5f);
-		checkinvites.setSize(5, 1);
-		checkInvitesButton = new Rectangle(0, 0.5f, 5, 1);
-
-		inviteplayers.setPosition(1, 1.7f);
-		inviteplayers.setSize(5, 1);
-		inviteButton = new Rectangle(1, 1.7f, 5, 1);
-
-		quickrace.setPosition(0, 2.9f);
-		quickrace.setSize(5, 1);
-		qrButton = new Rectangle(0, 2.9f, 5, 1);
-
-		background.setPosition(0, 0);
-		background.setSize(6, 10);
-
-		touchPoint = new Vector3();
+		gameRef.stage.addActor(background);
+		if(gameRef.googleServices.isSignedIn()){
+			gameRef.stage.addActor(checkinvites);
+			gameRef.stage.addActor(quickrace);
+			gameRef.stage.addActor(inviteplayers);
+		}
+		else{
+			gameRef.stage.addActor(signIn);
+		}
 	}
 
 	public void show() {
@@ -79,84 +75,14 @@ public class FRMultiplayerMenuScreen extends ScreenAdapter {
 	public void render(float delta) {
 		GL20 gl = Gdx.gl;
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		if (!gameRef.googleServices.isSignedIn()) {
-			updateSignedIn(delta);
-			renderSignedIn(delta);
-		} else {
-			updateMenu(delta);
-			renderMenu(delta);
-		}
+		gameRef.stage.draw();
 	}
-
-	private void updateMenu(float delta) {
-		if (Gdx.input.justTouched()) {
-			camera.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(),
-					0));
-			if (OverlapTester.pointInRectangle(qrButton, touchPoint.x,
-					touchPoint.y)) {
-				Gdx.app.log(FRConstants.TAG, "SinglePLayer Button Clicked");
-				quickRaceButtonClicked();
-			}
-			if (OverlapTester.pointInRectangle(inviteButton, touchPoint.x,
-					touchPoint.y)) {
-				Gdx.app.log(FRConstants.TAG, "Multiplayer Button Clicked");
-				inviteFriendsButtonClicked();
-			}
-			if (OverlapTester.pointInRectangle(checkInvitesButton,
-					touchPoint.x, touchPoint.y)) {
-				Gdx.app.log(FRConstants.TAG, "Settings Button Clicked");
-				checkInvitesButtonClicked();
-			}
-		}
-	}
-
-	private void updateSignedIn(float delta) {
-		if (Gdx.input.justTouched()) {
-			camera.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(),
-					0));
-			if (OverlapTester.pointInRectangle(signInButton, touchPoint.x,
-					touchPoint.y)) {
-				Gdx.app.log(FRConstants.TAG, "Sign In Button Clicked");
-				signInButtonClicked();
-			}
-		}
-
-	}
-
-	private void renderMenu(float delta) {
-		batch.begin();
-		background.draw(batch);
-		quickrace.draw(batch);
-		inviteplayers.draw(batch);
-		checkinvites.draw(batch);
-		batch.end();
-	}
-
-	private void renderSignedIn(float delta) {
-		batch.begin();
-		background.draw(batch);
-		signIn.draw(batch);
-		batch.end();
-	}
-
-	public void dispose() {
-		Gdx.app.log(FRConstants.TAG, "Menu: Dispose()");
-	}
-
-	private void quickRaceButtonClicked() {
-
-	}
-
-	private void inviteFriendsButtonClicked() {
-
-	}
-
-	private void checkInvitesButtonClicked() {
-
-	}
-
-	private void signInButtonClicked() {
-		gameRef.googleServices.initiateSignIn();
+	
+	public void enableSignedInButtons(){
+		signIn.remove();
+		gameRef.stage.addActor(checkinvites);
+		gameRef.stage.addActor(quickrace);
+		gameRef.stage.addActor(inviteplayers);
 	}
 
 }

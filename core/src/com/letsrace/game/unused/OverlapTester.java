@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.letsrace.game;
+package com.letsrace.game.unused;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;

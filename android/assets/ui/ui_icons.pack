@@ -1,4 +1,5 @@
-ui-icons-buttons.png
+
+ui_icons.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -12,13 +13,13 @@ background
 checkInvitesButton
   rotate: false
   xy: 570, 2
-  size: 300, 75
-  orig: 300, 75
+  size: 298, 73
+  orig: 298, 73
   offset: 0, 0
   index: -1
 fr.
   rotate: false
-  xy: 872, 2
+  xy: 870, 2
   size: 100, 51
   orig: 100, 51
   offset: 0, 0
@@ -26,35 +27,49 @@ fr.
 inviteFriendsButton
   rotate: false
   xy: 2, 804
-  size: 300, 75
-  orig: 300, 75
+  size: 298, 73
+  orig: 298, 73
   offset: 0, 0
   index: -1
 multiplayerButton
   rotate: false
-  xy: 304, 804
-  size: 300, 75
-  orig: 300, 75
+  xy: 302, 804
+  size: 298, 73
+  orig: 298, 73
   offset: 0, 0
   index: -1
 quickRaceButton
   rotate: false
-  xy: 606, 804
-  size: 300, 75
-  orig: 300, 75
+  xy: 602, 804
+  size: 298, 73
+  orig: 298, 73
   offset: 0, 0
   index: -1
 settingsIcon
   rotate: false
-  xy: 908, 804
-  size: 80, 80
-  orig: 80, 80
+  xy: 902, 804
+  size: 78, 78
+  orig: 78, 78
+  offset: 0, 0
+  index: -1
+signIn
+  rotate: false
+  xy: 2, 884
+  size: 320, 108
+  orig: 320, 108
+  offset: 0, 0
+  index: -1
+signInPressed
+  rotate: false
+  xy: 324, 884
+  size: 320, 108
+  orig: 320, 108
   offset: 0, 0
   index: -1
 singlePlayerButton
   rotate: false
-  xy: 2, 886
-  size: 300, 75
-  orig: 300, 75
+  xy: 646, 884
+  size: 298, 73
+  orig: 298, 73
   offset: 0, 0
   index: -1
