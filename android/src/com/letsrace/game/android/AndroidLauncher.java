@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.android.gms.common.ConnectionResult;
@@ -24,14 +23,12 @@ import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
 import com.google.android.gms.games.multiplayer.Participant;
-import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.android.gms.plus.Plus;
 import com.google.example.games.basegameutils.BaseGameUtils;
-import com.google.example.games.basegameutils.GameHelper;
 import com.letsrace.game.Assets;
 import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.LetsRace;
@@ -145,17 +142,16 @@ public class AndroidLauncher extends AndroidApplication implements
 		rtmConfigBuilder.setMessageReceivedListener(messageHandler);
 		rtmConfigBuilder.setRoomStatusUpdateListener(this);
 		rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
+		game.moveToScreen(GameState.WAIT);
 		Games.RealTimeMultiplayer.create(mGoogleApiClient,
 				rtmConfigBuilder.build());
-		game.moveToScreen(GameState.WAIT);
-		Gdx.app.log(TAG, "Building room");
 	}
 
 	@Override
 	public void onActivityResult(int requestCode, int responseCode,
 			Intent intent) {
 		super.onActivityResult(requestCode, responseCode, intent);
-		Gdx.app.log(TAG, "On activity result: "+requestCode);
+
 		switch (requestCode) {
 		case RC_SELECT_PLAYERS:
 			// we got the result from the "select players" UI -- ready to create
@@ -173,7 +169,7 @@ public class AndroidLauncher extends AndroidApplication implements
 			if (responseCode == Activity.RESULT_OK) {
 				// ready to start playing
 				Log.d(TAG, "Starting game (waiting room returned OK).");
-				game.decideOnServerAndStart();
+				game.moveToScreen(GameState.GAME_SCREEN);
 			} else if (responseCode == GamesActivityResultCodes.RESULT_LEFT_ROOM) {
 				// player indicated that they want to leave the room
 				leaveRoom();
@@ -205,8 +201,8 @@ public class AndroidLauncher extends AndroidApplication implements
 						parentActivity.finish();
 					}
 				};
-				BaseGameUtils.showActivityResultError(this, requestCode,
-						responseCode, R.string.sign_in_error);
+				BaseGameUtils.showActivityResultError(this, listener,requestCode,
+						responseCode, R.string.sign_in_error, responseCode);
 			}
 			break;
 		}
@@ -471,19 +467,13 @@ public class AndroidLauncher extends AndroidApplication implements
 
 	// Show error message about game being cancelled and return to main screen.
 	void showGameError() {
-		Gdx.app.log(TAG, "showGameError()");
 		OnClickListener listener = new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
-				game.moveToScreen(GameState.MENU);
 			}
 		};
 		BaseGameUtils.makeSimpleDialog(this, getString(R.string.other_error),
-<<<<<<< HEAD
 				"listener");
-=======
-				listener).show();
->>>>>>> 6164780f326cefc3e4bb1d32de2e5e735676ec35
 	}
 
 	// Called when room has been created
@@ -595,36 +585,17 @@ public class AndroidLauncher extends AndroidApplication implements
 	}
 
 	public void sendReliableMessage(byte[] message, String participantID) {
-		Gdx.app.log(TAG, "Sending reliable message");
-		if (participantID==mMyId)
-			messageHandler.onRealTimeMessageReceived(new RealTimeMessage(participantID, message, RealTimeMessage.RELIABLE));
-		else
-			Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null,
+		Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null,
 				message, room.getRoomId(), participantID);
 	}
 
 	public void broadcastMessage(byte[] message) {
-		Gdx.app.log(TAG, "Sending broadcast message");
 		for (Participant p : mParticipants) {
-			if (p.getParticipantId()==mMyId)
-				messageHandler.onRealTimeMessageReceived(new RealTimeMessage(mMyId, message, RealTimeMessage.UNRELIABLE));
-			else	
+			if (!p.getParticipantId().equals(mMyId)) {
 				Games.RealTimeMultiplayer.sendUnreliableMessage(
 						mGoogleApiClient, message, room.getRoomId(),
 						p.getParticipantId());
-		}
-	}
-
-	@Override
-	public void broadcastReliableMessage(byte[] message) {
-		Gdx.app.log(TAG, "Sending reliable broadcast message");
-		for (Participant p : mParticipants) {
-			if (p.getParticipantId()==mMyId)
-				messageHandler.onRealTimeMessageReceived(new RealTimeMessage(mMyId, message, RealTimeMessage.RELIABLE));
-			else
-				Games.RealTimeMultiplayer.sendReliableMessage(
-						mGoogleApiClient, null, message, room.getRoomId(),
-						p.getParticipantId());
+			}
 		}
 	}
 
@@ -638,11 +609,13 @@ public class AndroidLauncher extends AndroidApplication implements
 		messageHandler.setClientMessageListener(listener);
 	}
 
-<<<<<<< HEAD
 	@Override
 	public boolean isSignedIn() {
 		return mGoogleApiClient != null && mGoogleApiClient.isConnected();
 	}
-=======
->>>>>>> 6164780f326cefc3e4bb1d32de2e5e735676ec35
+
+	@Override
+	public void broadcastReliableMessage(byte[] message) {
+		
+	}
 }

@@ -13,6 +13,7 @@ import com.letsrace.game.Assets;
 import com.letsrace.game.FRConstants;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.OverlapTester;
+import com.letsrace.game.FRConstants.GameState;
 
 public class MultiplayerMenuScreen extends ScreenAdapter {
 
@@ -80,7 +81,7 @@ public class MultiplayerMenuScreen extends ScreenAdapter {
 	public void render(float delta) {
 		GL20 gl = Gdx.gl;
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		if (!gameRef.googleServices.isSignedIn()) {
+		if (gameRef.googleServices.isSignedIn()) {
 			updateSignedIn(delta);
 			renderSignedIn(delta);
 		} else {
@@ -145,7 +146,7 @@ public class MultiplayerMenuScreen extends ScreenAdapter {
 	}
 
 	private void quickRaceButtonClicked() {
-
+		gameRef.moveToScreen(GameState.ARENA_SELECT);
 	}
 
 	private void inviteFriendsButtonClicked() {

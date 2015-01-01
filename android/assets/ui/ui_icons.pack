@@ -1,0 +1,103 @@
+
+ui_icons.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+background
+  rotate: false
+  xy: 0, 63
+  size: 566, 800
+  orig: 566, 800
+  offset: 0, 0
+  index: -1
+fr.
+  rotate: false
+  xy: 0, 11
+  size: 100, 51
+  orig: 100, 51
+  offset: 0, 0
+  index: -1
+car-selection-car
+  rotate: false
+  xy: 567, 456
+  size: 407, 407
+  orig: 407, 407
+  offset: 0, 0
+  index: -1
+wait-screen-steer
+  rotate: false
+  xy: 975, 657
+  size: 207, 206
+  orig: 207, 206
+  offset: 0, 0
+  index: -1
+car-selection-stats
+  rotate: false
+  xy: 975, 400
+  size: 156, 256
+  orig: 156, 256
+  offset: 0, 0
+  index: -1
+car-selection-char
+  rotate: false
+  xy: 567, 199
+  size: 236, 256
+  orig: 236, 256
+  offset: 0, 0
+  index: -1
+settingsIcon
+  rotate: false
+  xy: 804, 377
+  size: 78, 78
+  orig: 78, 78
+  offset: 0, 0
+  index: -1
+signIn
+  rotate: false
+  xy: 883, 311
+  size: 300, 88
+  orig: 300, 88
+  offset: 0, 0
+  index: -1
+signInPressed
+  rotate: false
+  xy: 804, 222
+  size: 300, 88
+  orig: 300, 88
+  offset: 0, 0
+  index: -1
+checkInvitesButton
+  rotate: false
+  xy: 804, 148
+  size: 298, 73
+  orig: 298, 73
+  offset: 0, 0
+  index: -1
+inviteFriendsButton
+  rotate: false
+  xy: 567, 74
+  size: 298, 73
+  orig: 298, 73
+  offset: 0, 0
+  index: -1
+multiplayerButton
+  rotate: false
+  xy: 866, 74
+  size: 298, 73
+  orig: 298, 73
+  offset: 0, 0
+  index: -1
+quickRaceButton
+  rotate: false
+  xy: 567, 0
+  size: 298, 73
+  orig: 298, 73
+  offset: 0, 0
+  index: -1
+singlePlayerButton
+  rotate: false
+  xy: 866, 0
+  size: 298, 73
+  orig: 298, 73
+  offset: 0, 0
+  index: -1

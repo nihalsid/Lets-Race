@@ -14,6 +14,7 @@ import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.network.FRGameClient;
 import com.letsrace.game.network.FRGameServer;
 import com.letsrace.game.network.FRGoogleServices;
+import com.letsrace.game.screen.FRArenaSelectScreen;
 import com.letsrace.game.screen.FRCarSelectScreen;
 import com.letsrace.game.screen.FRGameScreen;
 import com.letsrace.game.screen.FRSplashScreen;
@@ -110,6 +111,10 @@ public class LetsRace extends Game {
 		case MULTIPLAYER_MENU:
 			gameState = GameState.MULTIPLAYER_MENU;
 			setScreen(new MultiplayerMenuScreen(this));
+			break;
+		case ARENA_SELECT:
+			gameState = GameState.MULTIPLAYER_MENU;
+			setScreen(new FRArenaSelectScreen(this));
 			break;
 		default:
 			break;
