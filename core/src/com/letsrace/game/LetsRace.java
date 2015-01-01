@@ -15,12 +15,13 @@ import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.network.FRGameClient;
 import com.letsrace.game.network.FRGameServer;
 import com.letsrace.game.network.FRGoogleServices;
+import com.letsrace.game.screen.FRAssets;
 import com.letsrace.game.screen.FRCarSelectScreen;
 import com.letsrace.game.screen.FRGameScreen;
 import com.letsrace.game.screen.FRSplashScreen;
 import com.letsrace.game.screen.FRWaitScreen;
 import com.letsrace.game.screen.MenuScreen;
-import com.letsrace.game.screen.MultiplayerMenuScreen;
+import com.letsrace.game.screen.FRMultiplayerMenuScreen;
 import com.letsrace.game.screen.SplashScreen;
 
 public class LetsRace extends Game {
@@ -69,7 +70,7 @@ public class LetsRace extends Game {
 		stage = new Stage();
 		batch = new SpriteBatch();
 		FRConstants.initializeDynamicConstants();
-		Assets.load();
+		FRAssets.load();
 		moveToScreen(GameState.SPLASH);
 	}
 
@@ -111,7 +112,7 @@ public class LetsRace extends Game {
 			break;
 		case MULTIPLAYER_MENU:
 			gameState = GameState.MULTIPLAYER_MENU;
-			setScreen(new MultiplayerMenuScreen(this));
+			setScreen(new FRMultiplayerMenuScreen(this));
 			break;
 		default:
 			break;

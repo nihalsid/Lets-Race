@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-import com.letsrace.game.Assets;
 import com.letsrace.game.FRConstants;
 import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.LetsRace;
@@ -18,8 +17,6 @@ import com.letsrace.game.OverlapTester;
 public class MenuScreen extends ScreenAdapter {
 
 	private LetsRace gameRef;
-	private final static int TOTAL_BUTTONS_ON_SCREEN = 3;
-	private final static int PADDING = 10;
 	SpriteBatch batch;
 	Sprite singleplayer;
 	Sprite multiplayer;
@@ -37,10 +34,10 @@ public class MenuScreen extends ScreenAdapter {
 		Gdx.app.log(FRConstants.TAG, "Menu: Constructor");
 		gameRef = letsRace;
 		batch = new SpriteBatch();
-		singleplayer = Assets.singleplayerButton;
-		multiplayer = Assets.multiplayerButton;
-		setting = Assets.settingsIcon;
-		background = Assets.background;
+		singleplayer = FRAssets.singleplayerButton;
+		multiplayer = FRAssets.multiplayerButton;
+		setting = FRAssets.settingsIcon;
+		background = FRAssets.background;
 
 		camera = new OrthographicCamera(6, 10);
 		camera.position.set(camera.viewportWidth / 2f,

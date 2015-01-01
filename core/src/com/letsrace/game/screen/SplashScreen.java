@@ -7,11 +7,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.SpriteCache;
-import com.letsrace.game.Assets;
 import com.letsrace.game.FRConstants;
-import com.letsrace.game.LetsRace;
 import com.letsrace.game.FRConstants.GameState;
+import com.letsrace.game.LetsRace;
 
 public class SplashScreen extends ScreenAdapter {
 	private LetsRace gameRef;
@@ -30,7 +28,7 @@ public class SplashScreen extends ScreenAdapter {
 		camera.update();
 		spriteBatch = new SpriteBatch();
 		spriteBatch.setProjectionMatrix(camera.combined);
-		fr = Assets.frIcon;
+		fr = FRAssets.frIcon;
 		fr.setSize(1.5f, 1.0f);
 		fr.setPosition(2.25f, 4.5f);
 		totalTime = 0.0f;

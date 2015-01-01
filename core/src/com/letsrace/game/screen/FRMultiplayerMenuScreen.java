@@ -9,12 +9,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-import com.letsrace.game.Assets;
 import com.letsrace.game.FRConstants;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.OverlapTester;
 
-public class MultiplayerMenuScreen extends ScreenAdapter {
+public class FRMultiplayerMenuScreen extends ScreenAdapter {
 
 	private LetsRace gameRef;
 	SpriteBatch batch;
@@ -33,16 +32,16 @@ public class MultiplayerMenuScreen extends ScreenAdapter {
 	Camera camera;
 	Vector3 touchPoint;
 
-	public MultiplayerMenuScreen(LetsRace letsRace) {
+	public FRMultiplayerMenuScreen(LetsRace letsRace) {
 		Gdx.app.log(FRConstants.TAG, "Menu: Constructor");
 		gameRef = letsRace;
 		batch = new SpriteBatch();
-		quickrace = Assets.quickraceButton;
-		inviteplayers = Assets.invitefriendsButton;
-		checkinvites = Assets.checkInvitesButton;
-		background = Assets.background;
-		signIn = Assets.signIn;
-		signInPressed = Assets.signInPressed;
+		quickrace = FRAssets.quickraceButton;
+		inviteplayers = FRAssets.invitefriendsButton;
+		checkinvites = FRAssets.checkInvitesButton;
+		background = FRAssets.background;
+		signIn = FRAssets.signIn;
+		signInPressed = FRAssets.signInPressed;
 
 		camera = new OrthographicCamera(6, 10);
 		camera.position.set(camera.viewportWidth / 2f,

@@ -1,9 +1,9 @@
-package com.letsrace.game;
+package com.letsrace.game.screen;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-public class Assets {
+public class FRAssets {
 	public static TextureAtlas uiButtonsAtlas;
 	public static Sprite singleplayerButton;
 	public static Sprite multiplayerButton;
