@@ -19,11 +19,10 @@ import com.letsrace.game.network.FRGameServer;
 import com.letsrace.game.network.FRGoogleServices;
 import com.letsrace.game.screen.FRCarSelectScreen;
 import com.letsrace.game.screen.FRGameScreen;
-import com.letsrace.game.screen.FRMultiplayerMenuScreen;
-import com.letsrace.game.screen.FRWaitScreen;
 import com.letsrace.game.screen.FRMenuScreen;
+import com.letsrace.game.screen.FRMultiplayerMenuScreen;
 import com.letsrace.game.screen.FRSplashScreen;
-import com.letsrace.game.unused.FROldSplashScreen;
+import com.letsrace.game.screen.FRWaitScreen;
 
 public class LetsRace extends Game {
 	public GameState gameState;
@@ -102,10 +101,6 @@ public class LetsRace extends Game {
 		case SELECT_CAR:
 			gameState = GameState.SELECT_CAR;
 			setScreen(new FRCarSelectScreen(this));
-			break;
-		case SPLASH_SIGN_IN:
-			gameState = GameState.SPLASH_SIGN_IN;
-			setScreen(new FROldSplashScreen(this));
 			break;
 		case SPLASH:
 			gameState = GameState.SPLASH;
