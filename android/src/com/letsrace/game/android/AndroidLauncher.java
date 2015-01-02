@@ -56,7 +56,6 @@ public class AndroidLauncher extends AndroidApplication implements
 	// Request code used to invoke sign in user interactions.
 	private static final int RC_SIGN_IN = 9001;
 
-	// Client used to interact with Google APIs.
 	private GoogleApiClient mGoogleApiClient;
 
 	// Are we currently resolving a connection failure?
@@ -147,10 +146,9 @@ public class AndroidLauncher extends AndroidApplication implements
 		rtmConfigBuilder.setMessageReceivedListener(messageHandler);
 		rtmConfigBuilder.setRoomStatusUpdateListener(this);
 		rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
+		game.moveToScreen(GameState.WAIT);
 		Games.RealTimeMultiplayer.create(mGoogleApiClient,
 				rtmConfigBuilder.build());
-		game.moveToScreen(GameState.WAIT);
-		Gdx.app.log(TAG, "Building room");
 	}
 
 	@Override
@@ -175,7 +173,7 @@ public class AndroidLauncher extends AndroidApplication implements
 			if (responseCode == Activity.RESULT_OK) {
 				// ready to start playing
 				Log.d(TAG, "Starting game (waiting room returned OK).");
-				game.decideOnServerAndStart();
+				game.moveToScreen(GameState.GAME_SCREEN);
 			} else if (responseCode == GamesActivityResultCodes.RESULT_LEFT_ROOM) {
 				// player indicated that they want to leave the room
 				leaveRoom();
@@ -480,11 +478,9 @@ public class AndroidLauncher extends AndroidApplication implements
 
 	// Show error message about game being cancelled and return to main screen.
 	void showGameError() {
-		Gdx.app.log(TAG, "showGameError()");
 		OnClickListener listener = new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
-				game.moveToScreen(GameState.MENU);
 			}
 		};
 		BaseGameUtils.makeSimpleDialog(this, getString(R.string.other_error),listener).show();

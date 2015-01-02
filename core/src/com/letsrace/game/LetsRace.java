@@ -17,12 +17,14 @@ import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.network.FRGameClient;
 import com.letsrace.game.network.FRGameServer;
 import com.letsrace.game.network.FRGoogleServices;
+import com.letsrace.game.screen.FRArenaSelectScreen;
 import com.letsrace.game.screen.FRCarSelectScreen;
 import com.letsrace.game.screen.FRGameScreen;
 import com.letsrace.game.screen.FRMenuScreen;
 import com.letsrace.game.screen.FRMultiplayerMenuScreen;
 import com.letsrace.game.screen.FRSplashScreen;
 import com.letsrace.game.screen.FRWaitScreen;
+import com.letsrace.game.unused.FRAssets;
 
 public class LetsRace extends Game {
 	public GameState gameState;
@@ -73,6 +75,7 @@ public class LetsRace extends Game {
 		guicam = new OrthographicCamera();
 		batch = new SpriteBatch();
 		FRConstants.initializeDynamicConstants();
+		FRAssets.load();
 		moveToScreen(GameState.SPLASH);
 	}
 
@@ -111,6 +114,10 @@ public class LetsRace extends Game {
 		case MULTIPLAYER_MENU:
 			gameState = GameState.MULTIPLAYER_MENU;
 			setScreen(new FRMultiplayerMenuScreen(this));
+			break;
+		case ARENA_SELECT:
+			gameState = GameState.ARENA_SELECT;
+			setScreen(new FRArenaSelectScreen(this));
 			break;
 		default:
 			break;

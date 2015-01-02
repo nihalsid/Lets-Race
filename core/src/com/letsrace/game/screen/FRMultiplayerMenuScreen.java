@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.letsrace.game.FRConstants;
 import com.letsrace.game.LetsRace;
+import com.letsrace.game.FRConstants.GameState;
 
 public class FRMultiplayerMenuScreen extends ScreenAdapter {
 	LetsRace gameRef;
@@ -50,7 +51,8 @@ public class FRMultiplayerMenuScreen extends ScreenAdapter {
 		quickrace.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				gameRef.googleServices.startQuickGame();
+				gameRef.moveToScreen(GameState.ARENA_SELECT);
+				//gameRef.googleServices.startQuickGame();
 			}
 		});
 	
