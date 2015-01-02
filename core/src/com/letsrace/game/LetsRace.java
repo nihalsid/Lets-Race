@@ -35,7 +35,9 @@ public class LetsRace extends Game {
 	public HashMap<String, Integer> playerNumber;
 	public int myPlayerNo;
 	public FRGameClient client;
-
+	public boolean multiplayer;
+	
+	
 	public LetsRace(FRGoogleServices services) {
 		googleServices = services;
 		playerNumber = new HashMap<String, Integer>();
@@ -88,7 +90,7 @@ public class LetsRace extends Game {
 		switch (screen) {
 		case GAME_SCREEN:
 			gameState = GameState.GAME_SCREEN;
-			setScreen(new FRGameScreen(this));
+			setScreen(new FRGameScreen(this, multiplayer));
 			break;
 		case MENU:
 			gameState = GameState.MENU;

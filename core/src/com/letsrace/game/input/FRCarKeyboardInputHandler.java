@@ -31,26 +31,29 @@ public class FRCarKeyboardInputHandler extends FRInputAdapter{
 	}
 	
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-		carRef.accelerate = Accel.BRAKE;
+		System.out.println(((float)screenX)/Gdx.graphics.getWidth()+","+((float)screenY)/Gdx.graphics.getHeight());
+		carRef.accelerate = Accel.ACCELERATE;
 		return true;	}
 
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-		carRef.accelerate = Accel.ACCELERATE;
+		carRef.accelerate = Accel.BRAKE;
 		return true;
 	}
 
-	float lastX;
 	public void handleAccelerometer(){
 		final float NOISE = 2f;
 		float x = Gdx.input.getAccelerometerX();
-		if (x<=NOISE && carRef.steer!=Steer.RIGHT){
+		if (x>=NOISE && carRef.steer!=Steer.RIGHT){
 			carRef.steer = Steer.RIGHT;
+			System.out.println("A");
 		}
-		if(x>=-NOISE&&carRef.steer!=Steer.LEFT){
+		if(x<=-NOISE&&carRef.steer!=Steer.LEFT){
 			carRef.steer = Steer.LEFT;
+			System.out.println("B");
 		}
-		if(x<-NOISE&&x>NOISE&&carRef.steer!=Steer.NONE){
+		if(x>-NOISE&&x<NOISE&&carRef.steer!=Steer.NONE){
 			carRef.steer = Steer.NONE;
+			System.out.println("C");
 		}
 	}
 	
