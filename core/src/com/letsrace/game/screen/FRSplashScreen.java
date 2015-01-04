@@ -12,7 +12,7 @@ import com.letsrace.game.FRConstants.GameState;
 
 public class FRSplashScreen extends ScreenAdapter {
 	private LetsRace gameRef;
-	float totalTime;
+	float totalTime = 0;
 
 	public FRSplashScreen(LetsRace game) {
 		Gdx.app.log(FRConstants.TAG, "FRSplash: Constructor");
@@ -26,21 +26,25 @@ public class FRSplashScreen extends ScreenAdapter {
 
 	public void show() {
 		Gdx.app.log(FRConstants.TAG, "FRSplash: Show()");
-		Task action = new Task() {
-			@Override
-			public void run() {
-				gameRef.moveToScreen(GameState.MENU);
-			}
-		};
-		Timer.schedule(action, 3);
+//		Task action = new Task() {
+//			@Override
+//			public void run() {
+//				gameRef.moveToScreen(GameState.MENU);
+//			}
+//		};
+//		Timer.schedule(action, 3);
 	}
 
 	@Override
 	public void render(float delta) {
 		GL20 gl = Gdx.gl;
+		totalTime +=delta;
 		gl.glClearColor(0, 0, 0, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		gameRef.stage.draw();
+		if(totalTime > 3f){
+			gameRef.moveToScreen(GameState.MENU);
+		}
 	}
 
 	public void dispose() {

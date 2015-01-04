@@ -35,6 +35,7 @@ import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.network.FRGoogleServices;
 import com.letsrace.game.network.FRMessageListener;
+import com.letsrace.game.network.FRNetwork;
 import com.letsrace.game.screen.FRMultiplayerMenuScreen;
 import com.letsrace.game.unused.FRAssets;
 
@@ -89,6 +90,7 @@ public class AndroidLauncher extends AndroidApplication implements
 	// Message handler
 	FRMessageHandler messageHandler;
 
+	FRNetwork network;
 	LetsRace game;
 
 	@Override
@@ -105,7 +107,8 @@ public class AndroidLauncher extends AndroidApplication implements
 		config.useAccelerometer = true;
 		config.useCompass = true;
 		game = new LetsRace(this);
-		messageHandler = new FRMessageHandler();
+		network = new FRNetwork(this);
+		messageHandler = new FRMessageHandler(network);
 		initialize(game, config);
 	}
 
@@ -205,8 +208,9 @@ public class AndroidLauncher extends AndroidApplication implements
 						parentActivity.finish();
 					}
 				};
-				BaseGameUtils.showActivityResultError(this, listener, requestCode,
-						responseCode, R.string.sign_in_error, responseCode);
+				BaseGameUtils.showActivityResultError(this, listener,
+						requestCode, responseCode, R.string.sign_in_error,
+						responseCode);
 			}
 			break;
 		}
@@ -404,8 +408,9 @@ public class AndroidLauncher extends AndroidApplication implements
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
 			public void run() {
-				if(game.gameState==GameState.MULTIPLAYER_MENU){
-					((FRMultiplayerMenuScreen)game.getScreen()).enableSignedInButtons();
+				if (game.gameState == GameState.MULTIPLAYER_MENU) {
+					((FRMultiplayerMenuScreen) game.getScreen())
+							.enableSignedInButtons();
 				}
 			}
 		});
@@ -483,7 +488,8 @@ public class AndroidLauncher extends AndroidApplication implements
 			public void onClick(DialogInterface arg0, int arg1) {
 			}
 		};
-		BaseGameUtils.makeSimpleDialog(this, getString(R.string.other_error),listener).show();
+		BaseGameUtils.makeSimpleDialog(this, getString(R.string.other_error),
+				listener).show();
 	}
 
 	// Called when room has been created
