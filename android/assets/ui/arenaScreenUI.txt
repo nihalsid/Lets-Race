@@ -2,31 +2,38 @@ arenaScreenUI.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-nextArrow
+endHint
   rotate: false
   xy: 2, 2
+  size: 100, 161
+  orig: 100, 161
+  offset: 0, 0
+  index: -1
+nextArrow
+  rotate: false
+  xy: 104, 2
   size: 38, 86
   orig: 38, 86
   offset: 0, 0
   index: -1
 sunnyWarsHeading
   rotate: false
-  xy: 42, 2
+  xy: 144, 2
   size: 300, 59
   orig: 300, 59
   offset: 0, 0
   index: -1
 sunnyWarsLogo
   rotate: false
-  xy: 2, 90
+  xy: 2, 165
   size: 300, 260
   orig: 300, 260
   offset: 0, 0
   index: -1
 sunnyWarsTrack
   rotate: false
-  xy: 2, 352
-  size: 250, 140
-  orig: 250, 140
+  xy: 2, 427
+  size: 250, 200
+  orig: 250, 200
   offset: 0, 0
   index: -1

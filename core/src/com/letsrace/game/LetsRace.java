@@ -24,6 +24,7 @@ import com.letsrace.game.screen.FRMenuScreen;
 import com.letsrace.game.screen.FRMultiplayerMenuScreen;
 import com.letsrace.game.screen.FRSplashScreen;
 import com.letsrace.game.screen.FRWaitScreen;
+import com.letsrace.game.screen.FRWaitingForPlayerScreen;
 import com.letsrace.game.unused.FRAssets;
 
 public class LetsRace extends Game {
@@ -44,9 +45,9 @@ public class LetsRace extends Game {
 		googleServices = services;
 		playerNumber = new HashMap<String, Integer>();
 	}
-	
+
 	public void decideOnServerAndStart() {
-		ArrayList<String> list =  googleServices.getParticipantIds();
+		ArrayList<String> list = googleServices.getParticipantIds();
 		String[] participants = list.toArray(new String[list.size()]);
 		Arrays.sort(participants);
 		if (participants[0] == googleServices.getMyId()) {
@@ -59,7 +60,7 @@ public class LetsRace extends Game {
 			playerNumber.put(s, ctr++);
 		}
 		myPlayerNo = playerNumber.get(googleServices.getMyId());
-		Gdx.app.log(FRConstants.TAG, "I am the client - P"+myPlayerNo);
+		Gdx.app.log(FRConstants.TAG, "I am the client - P" + myPlayerNo);
 		client = new FRGameClient(this, participants[0]);
 		Gdx.app.log(FRConstants.TAG, "Setting Client Listener");
 		googleServices.setClientListener(client);
@@ -118,6 +119,10 @@ public class LetsRace extends Game {
 		case ARENA_SELECT:
 			gameState = GameState.ARENA_SELECT;
 			setScreen(new FRArenaSelectScreen(this));
+			break;
+		case PLAYER_WAITING:
+			gameState = GameState.PLAYER_WAITING;
+			setScreen(new FRWaitingForPlayerScreen(this));
 			break;
 		default:
 			break;

@@ -48,7 +48,6 @@ public class FRNetworkInputHandler extends FRInputAdapter{
 		msg[0] = FRMessageCodes.NO_ACCELERATE;
 		networkServices.sendReliableMessage(msg, serverID);
 		return true;
-
 	}
 
 	

@@ -22,6 +22,8 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.letsrace.game.CameraTweenAccessor;
 import com.letsrace.game.FRConstants;
 import com.letsrace.game.LetsRace;
@@ -42,6 +44,7 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 	Sprite trackOverview;
 	Sprite arrow;
 	Sprite background;
+	Sprite endHint;
 
 	TweenManager tweenMgr;
 	GestureDetector gesture;
@@ -50,6 +53,7 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 	float camHalfHeight;
 
 	private boolean isAnimating = false;
+	private boolean showLeft = false, showRight = false;
 
 	public FRArenaSelectScreen(LetsRace letsRace) {
 		Gdx.app.log(FRConstants.TAG, "Menu: Constructor");
@@ -96,9 +100,21 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 		gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		tweenMgr.update(delta);
+		batch.begin();
+		endHint = FRAssets.arenaScreenAtlas.createSprite("endHint");
 		renderTile(currentPosition);
 		renderTile(currentPosition - 1);
 		renderTile(currentPosition + 1);
+		endHint.setSize(camHalfWidth * 2, camHalfHeight * 2);
+		endHint.setPosition((currentPosition - 1) * camHalfWidth * 2, 0);
+		if (showLeft) {
+			endHint.draw(batch);
+		}
+		if (showRight) {
+			endHint.flip(true, false);
+			endHint.draw(batch);
+		}
+		batch.end();
 	}
 
 	public void dispose() {
@@ -143,6 +159,13 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 					.setCallback(myCallBack)
 					.setCallbackTriggers(TweenCallback.END).start(tweenMgr);
 			isAnimating = true;
+		} else {
+			showLeft = true;
+			Timer.schedule(new Task() {
+				public void run() {
+					showLeft = false;
+				}
+			}, 0.3f);
 		}
 	}
 
@@ -156,6 +179,13 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 					.setCallback(myCallBack)
 					.setCallbackTriggers(TweenCallback.END).start(tweenMgr);
 			isAnimating = true;
+		} else {
+			showRight = true;
+			Timer.schedule(new Task() {
+				public void run() {
+					showRight = false;
+				}
+			}, 0.3f);
 		}
 	}
 
@@ -188,8 +218,8 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 			String name = arenaNames.get(pos - 1);
 			logo = FRAssets.arenaScreenAtlas.createSprite(name + "Logo");
 			heading = FRAssets.arenaScreenAtlas.createSprite(name + "Heading");
-			trackOverview = FRAssets.arenaScreenAtlas
-					.createSprite(name + "Track");
+			trackOverview = FRAssets.arenaScreenAtlas.createSprite(name
+					+ "Track");
 
 			float xOffset = (pos - 1) * camHalfWidth * 2;
 
@@ -208,15 +238,13 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 			trackOverview.setSize(3.5f, 2.0f);
 			trackOverview.setPosition(xOffset + 1.25f, 1.0f);
 
-			batch.begin();
-
 			background.draw(batch);
 			heading.draw(batch);
 			logo.draw(batch);
 			trackOverview.draw(batch);
 
 			if (!isAnimating) {
-				arrow.setSize(0.4f, 1.2f);
+				arrow.setSize(0.5f, 1.2f);
 				if (currentPosition > 1) {
 					arrow.setPosition(xOffset + 0.2f, camHalfHeight);
 					arrow.draw(batch);
@@ -227,7 +255,6 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 					arrow.draw(batch);
 				}
 			}
-			batch.end();
 
 		}
 	}
