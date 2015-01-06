@@ -32,7 +32,7 @@ import com.letsrace.game.unused.FRAssets;
 public class FRArenaSelectScreen extends ScreenAdapter implements
 		GestureListener {
 
-	private LetsRace gameRef;
+	LetsRace gameRef;
 	SpriteBatch batch;
 	Camera camera;
 	Vector3 touchPoint;
