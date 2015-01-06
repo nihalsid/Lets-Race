@@ -42,6 +42,8 @@ public class FRCarKeyboardInputHandler extends FRInputAdapter{
 	public void handleAccelerometer(){
 		final float NOISE = 2f;
 		float x = Gdx.input.getAccelerometerX();
+		if(x==0.0)
+			return;
 		if (x>=NOISE && carRef.steer!=Steer.RIGHT){
 			carRef.steer = Steer.RIGHT;
 		}
@@ -56,10 +58,10 @@ public class FRCarKeyboardInputHandler extends FRInputAdapter{
 	
 	public boolean keyUp(int keycode) {
 		if (keycode == Input.Keys.DPAD_UP) {
-			carRef.accelerate = Accel.ACCELERATE;
+			carRef.accelerate = Accel.NONE;
 			return true;
 		} else if (keycode == Input.Keys.DPAD_DOWN) {
-			carRef.accelerate = Accel.ACCELERATE;
+			carRef.accelerate = Accel.NONE;
 			return true;
 		} else if (keycode == Input.Keys.DPAD_LEFT) {
 			carRef.steer = Steer.NONE;
