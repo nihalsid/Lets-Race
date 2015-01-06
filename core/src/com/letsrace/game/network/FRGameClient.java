@@ -10,6 +10,7 @@ import com.letsrace.game.FRConstants;
 import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.FRGameWorld;
 import com.letsrace.game.LetsRace;
+import com.letsrace.game.Message;
 import com.letsrace.game.car.Car;
 import com.letsrace.game.car.Car.Accel;
 import com.letsrace.game.car.Car.Steer;
@@ -18,16 +19,17 @@ public class FRGameClient implements FRMessageListener{
 	public FRGameWorld gameWorld;
 	public LetsRace gameRef;
 	public String serverID;
+	public FRQueueHandler queueHandler;
 	
 	public FRGameClient(LetsRace game, String serverID) {
 		Gdx.app.log(FRConstants.TAG, "FRGameClient(): Constructor");
 		this.serverID = serverID;
 		this.gameRef = game;
+		queueHandler = new FRQueueHandler();
 		gameWorld = new FRGameWorld();
 	}
 	
-	@Override
-	public void onMessageRecieved(byte[] buffer, String participantId) {
+	public void processMessage(byte[] buffer, String participantId){
 		int playerNo;
 		switch(buffer[0]){
 		case PING_DETECT_REQ:
@@ -114,6 +116,13 @@ public class FRGameClient implements FRMessageListener{
 			break;
 		}
 	}
+	
+	@Override
+	public void onMessageRecieved(byte[] buffer, String senderParticipantId) {
+		Message msg = new Message(buffer, senderParticipantId);
+		queueHandler.addToQueue(msg);
+	}
+
 	
 	public void handleSyncPacket(byte[] packet){
 		int ctr=1;

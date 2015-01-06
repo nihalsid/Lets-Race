@@ -21,24 +21,26 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.letsrace.game.FRConstants;
 import com.letsrace.game.FRGameWorld;
 import com.letsrace.game.LetsRace;
+import com.letsrace.game.Message;
 import com.letsrace.game.car.Car;
 
 public class FRGameServer implements FRMessageListener {
 	FRGameWorld gameWorld;
 	LetsRace gameRef;
 	HashMap<String, FRPlayerData> sessionData;
-
+	FRQueueHandler queueHandler;
+	
 	public FRGameServer(LetsRace game, String[] participants) {
 		Gdx.app.log(FRConstants.TAG, "FRGameServer(): Constructor");
 		gameRef = game;
 		gameWorld = new FRGameWorld();
 		sessionData = new HashMap<String, FRPlayerData>();
+		queueHandler = new FRQueueHandler();
 		for (String s : participants)
 			sessionData.put(s, new FRPlayerData());
 	}
-
-	@Override
-	public void onMessageRecieved(byte[] buffer, String senderParticipantId) {
+	
+	public void processMessage(byte[] buffer, String senderParticipantId){
 		byte msg[];
 		switch (buffer[0]) {
 		case PING_DETECT_RES:
@@ -90,6 +92,12 @@ public class FRGameServer implements FRMessageListener {
 			}
 			break;
 		}
+	}
+	
+	@Override
+	public void onMessageRecieved(byte[] buffer, String senderParticipantId) {
+		Message msg = new Message(buffer, senderParticipantId);
+		queueHandler.addToQueue(msg);
 	}
 
 	private void checkCarAvailabilityAndReply(byte msgHead,
