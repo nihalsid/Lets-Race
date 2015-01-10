@@ -40,11 +40,15 @@ public class FRMessageCodes {
 	public static final byte STEER_STRAIGHT_PLAYER_2 = (byte) 0x4A;
 	public static final byte STEER_STRAIGHT_PLAYER_3 = (byte) 0x4B;
 	public static final byte NO_ACCELERATE = (byte) 0xD0;
+	
 	public static final byte NO_ACCELERATE_PLAYER_0 = (byte) 0x50;
 	public static final byte NO_ACCELERATE_PLAYER_1 = (byte) 0x51;
 	public static final byte NO_ACCELERATE_PLAYER_2 = (byte) 0x52;
 	public static final byte NO_ACCELERATE_PLAYER_3 = (byte) 0x53;
 	
+	public static final byte SIGN_IN_SUCCESSFUL = (byte) 0xAA;
+	public static final byte SIGN_IN_FAILED = (byte) 0xAB;
+		
 	public static byte extractHeaderExtField(byte msg){
 		return (byte) (msg&0x07);
 	}

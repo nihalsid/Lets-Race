@@ -29,11 +29,17 @@ public class FRWaitingForPlayerScreen extends ScreenAdapter {
 	Sprite firedMissile;
 	Sprite cannistor;
 	Animation explosion;
+	Animation wheel;
+
 	Sprite background;
 	BitmapFont font;
 
+	private float BOX_SPEED = 10f;
+
 	Camera camera;
 	int score;
+
+	public static final float LEVEL_UP_TIME = 60.0f;
 
 	enum State {
 		COMPLETED, RUNNING
@@ -65,7 +71,7 @@ public class FRWaitingForPlayerScreen extends ScreenAdapter {
 		}
 
 		public void update(float delta) {
-			bound.setPosition(bound.getX(), bound.getY() - 10 * delta);
+			bound.setPosition(bound.getX(), bound.getY() - BOX_SPEED * delta);
 		}
 
 	}
@@ -132,9 +138,11 @@ public class FRWaitingForPlayerScreen extends ScreenAdapter {
 
 	Random random;
 	Car vaderCar;
-	private final float TIME_BETWEEN_SPAWN = 1.4f;
+	private float TIME_BETWEEN_SPAWN = 2.0f;
 
 	float timeElapsed;
+
+	float runningTime;
 
 	public FRWaitingForPlayerScreen(LetsRace letsRace) {
 		this.gameRef = letsRace;
@@ -154,7 +162,7 @@ public class FRWaitingForPlayerScreen extends ScreenAdapter {
 		random = new Random();
 
 		FRAssets.load();
-		car = FRAssets.vaderFullCar;
+		car = FRAssets.vaderCarBody;
 		cannistor = FRAssets.cannister;
 		firedMissile = FRAssets.firedMissile;
 
@@ -165,6 +173,8 @@ public class FRWaitingForPlayerScreen extends ScreenAdapter {
 		font = new BitmapFont();
 
 		state = State.RUNNING;
+		runningTime = 0.0f;
+		wheel = FRAssets.wheel;
 	}
 
 	private static final float TIME_BETWEEN_FIRE = 0.6f;
@@ -200,7 +210,8 @@ public class FRWaitingForPlayerScreen extends ScreenAdapter {
 		background.setPosition(0, 0);
 		background.setSize(300, 500);
 		background.draw(batch);
-		font.draw(batch, "TAP TO RESTART", 100, 250);
+		font.draw(batch, "YOUR SCORE : " + score, 80, 270);
+		font.draw(batch, "TAP TO RESTART", 80, 250);
 		batch.end();
 	}
 
@@ -236,9 +247,7 @@ public class FRWaitingForPlayerScreen extends ScreenAdapter {
 			firedMissile.draw(batch);
 		}
 
-		car.setSize(vaderCar.bound.getWidth(), vaderCar.bound.getHeight());
-		car.setPosition(vaderCar.bound.getX(), vaderCar.bound.getY());
-		car.draw(batch);
+		drawCar(delta);
 		// explosion.getCurrentSprite().draw(batch);
 		font.setColor(Color.BLACK);
 		font.draw(batch, "Score : " + score, 220, 490);
@@ -250,6 +259,12 @@ public class FRWaitingForPlayerScreen extends ScreenAdapter {
 		timeElapsed += delta;
 		timeSinceLastFire += delta;
 
+		runningTime += delta;
+		if (runningTime > LEVEL_UP_TIME) {
+			runningTime -= LEVEL_UP_TIME;
+			TIME_BETWEEN_SPAWN = Math.max(0.5f, TIME_BETWEEN_SPAWN * 0.8f);
+			BOX_SPEED = Math.min(50, BOX_SPEED * 1.2f);
+		}
 		Box item;
 		int l = cannisters.size;
 		for (int i = l; --i >= 0;) {
@@ -389,6 +404,28 @@ public class FRWaitingForPlayerScreen extends ScreenAdapter {
 
 		score = 0;
 		vaderCar.bound.setPosition(150, 10);
+	}
+
+	private void drawCar(float delta) {
+		wheel.update(delta);
+		Sprite wheelSprite = wheel.getCurrentSprite();
+		car.setSize(vaderCar.bound.getWidth(), vaderCar.bound.getHeight());
+		car.setPosition(vaderCar.bound.getX(), vaderCar.bound.getY());
+		wheelSprite.setSize(20, 40);
+		wheelSprite.setPosition(vaderCar.bound.getX(), vaderCar.bound.getY());
+		wheelSprite.draw(batch);
+		wheelSprite.setPosition(
+				vaderCar.bound.getX() + vaderCar.bound.getWidth() - 20,
+				vaderCar.bound.getY());
+		wheelSprite.draw(batch);
+		wheelSprite.setPosition(vaderCar.bound.getX(), vaderCar.bound.getY()
+				+ vaderCar.bound.getHeight() - 30);
+		wheelSprite.draw(batch);
+		wheelSprite.setPosition(
+				vaderCar.bound.getX() + vaderCar.bound.getWidth() - 20,
+				vaderCar.bound.getY() + vaderCar.bound.getHeight() - 30);
+		wheelSprite.draw(batch);
+		car.draw(batch);
 	}
 
 }

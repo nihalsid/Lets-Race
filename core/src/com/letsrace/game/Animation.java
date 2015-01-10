@@ -17,24 +17,24 @@ public class Animation {
 		this.isLooping = isLooping;
 		this.sprtiteName = spriteName;
 		this.atlas = atlas;
-		this.timeBetweenFrames = 0.0f;
+		this.timeBetweenFrames = timeBetweenFrames;
 		this.length = length;
+		currentFrame = 1;
 	}
 
 	public void update(float delta) {
 		timeElapsed += delta;
 		if (timeElapsed > timeBetweenFrames) {
 			timeElapsed = 0.0f;
-			currentFrame = currentFrame + 1;
 			if (isLooping) {
-				currentFrame = currentFrame % length;
+				currentFrame = 1 + currentFrame % length;
 			} else {
-				currentFrame = Math.max(currentFrame, length);
+				currentFrame = Math.min(currentFrame + 1, length);
 			}
 		}
 	}
-	
-	public Sprite getCurrentSprite(){
+
+	public Sprite getCurrentSprite() {
 		return atlas.createSprite(sprtiteName, currentFrame);
 	}
 

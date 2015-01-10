@@ -20,9 +20,9 @@ public class FRMapHandler{
 	public FRAngleMonitor angleMon=new FRAngleMonitor(0.50f);
 	public Body mainCarBody;
 	
-	public FRMapHandler(World physicalWorld){
+	public FRMapHandler(World physicalWorld,String arenaName){
 		this.physicalWorldRef = physicalWorld;
-		tiledMap = new TmxMapLoader().load("beach_track_draft_two.tmx");
+		tiledMap = new TmxMapLoader().load(arenaName);
 		manager = new MapBodyManager(physicalWorld, PIXELS_PER_UNIT, null, 0);
 		manager.createPhysics(tiledMap);
 		initialPositionMarkers = manager.getInitialPosition(tiledMap);
@@ -47,4 +47,7 @@ public class FRMapHandler{
 		});
 	}
 	
+	public Vector2 getInitialPositionForNumber(int index){
+		return initialPositionMarkers[index];
+	}
 }

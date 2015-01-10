@@ -1,6 +1,5 @@
 package com.letsrace.game.unused;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.letsrace.game.Animation;
@@ -21,19 +20,22 @@ public class FRAssets {
 	public static TextureAtlas arenaScreenAtlas;
 	public static TextureAtlas playerAsset;
 	public static Animation explosion;
-	
+
 	public static Sprite cannister;
 	public static Sprite vaderFullCar;
 	public static Sprite firedMissile;
-	
-	
+	public static Sprite vaderCarBody;
+	public static Animation wheel;
+
 	public static void load() {
 		uiButtonsAtlas = new TextureAtlas("ui/ui_icons.pack");
 		playerAsset = new TextureAtlas("ui/playerAssetsAtlas.txt");
-		explosion  =new Animation(false, 1/60f, playerAsset, "explosion", 41);
-		cannister = playerAsset.createSprite("cannister",1);
+		explosion = new Animation(false, 1 / 60f, playerAsset, "explosion", 41);
+		cannister = playerAsset.createSprite("cannister", 1);
 		vaderFullCar = playerAsset.createSprite("vaderCar_NoWeapon");
-		firedMissile =playerAsset.createSprite("missileFired");
+		firedMissile = playerAsset.createSprite("missileFired");
+		vaderCarBody = playerAsset.createSprite("vaderCarBody");
+		wheel = new Animation(true, 1 / 7f, playerAsset, "wheel", 2);
 		/*
 		 * singleplayerButton =
 		 * uiButtonsAtlas.createSprite("singlePlayerButton"); multiplayerButton

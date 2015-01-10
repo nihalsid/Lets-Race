@@ -35,7 +35,6 @@ import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.network.FRGoogleServices;
 import com.letsrace.game.network.FRMessageListener;
-import com.letsrace.game.network.FRNetwork;
 import com.letsrace.game.screen.FRMultiplayerMenuScreen;
 import com.letsrace.game.unused.FRAssets;
 
@@ -90,7 +89,6 @@ public class AndroidLauncher extends AndroidApplication implements
 	// Message handler
 	FRMessageHandler messageHandler;
 
-	FRNetwork network;
 	LetsRace game;
 
 	@Override
@@ -107,8 +105,7 @@ public class AndroidLauncher extends AndroidApplication implements
 		config.useAccelerometer = true;
 		config.useCompass = true;
 		game = new LetsRace(this);
-		network = new FRNetwork(this);
-		messageHandler = new FRMessageHandler(network);
+		messageHandler = new FRMessageHandler(game.network);
 		initialize(game, config);
 	}
 
@@ -440,6 +437,7 @@ public class AndroidLauncher extends AndroidApplication implements
 							connectionResult, RC_SIGN_IN,
 							getString(R.string.other_error));
 		}
+		
 		// TODO: Quit game
 	}
 
