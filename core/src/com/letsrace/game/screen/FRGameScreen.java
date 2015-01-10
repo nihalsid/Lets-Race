@@ -15,10 +15,9 @@ public class FRGameScreen extends ScreenAdapter{
 	public LetsRace gameRef;
 	public FRGameRenderer renderer;
 	public FRGameWorld gameWorldRef;
-	public final boolean debug = true;
 	public FRInputAdapter adapter;
-	public FRGameScreen(LetsRace letsRace) {
-		if(!debug){
+	public FRGameScreen(LetsRace letsRace, boolean multiplayer) {
+		if(multiplayer){
 			Gdx.app.log(FRConstants.TAG, "GameScreen(): Constructor");
 			this.gameRef = letsRace;
 			gameWorldRef = gameRef.client.gameWorld;

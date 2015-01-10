@@ -31,25 +31,26 @@ public class FRCarKeyboardInputHandler extends FRInputAdapter{
 	}
 	
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-		carRef.accelerate = Accel.BRAKE;
+		carRef.accelerate = Accel.ACCELERATE;
 		return true;	}
 
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-		carRef.accelerate = Accel.ACCELERATE;
+		carRef.accelerate = Accel.BRAKE;
 		return true;
 	}
 
-	float lastX;
 	public void handleAccelerometer(){
 		final float NOISE = 2f;
 		float x = Gdx.input.getAccelerometerX();
-		if (x<=NOISE && carRef.steer!=Steer.RIGHT){
+		if(x==0.0)
+			return;
+		if (x>=NOISE && carRef.steer!=Steer.RIGHT){
 			carRef.steer = Steer.RIGHT;
 		}
-		if(x>=-NOISE&&carRef.steer!=Steer.LEFT){
+		if(x<=-NOISE&&carRef.steer!=Steer.LEFT){
 			carRef.steer = Steer.LEFT;
 		}
-		if(x<-NOISE&&x>NOISE&&carRef.steer!=Steer.NONE){
+		if(x>-NOISE&&x<NOISE&&carRef.steer!=Steer.NONE){
 			carRef.steer = Steer.NONE;
 		}
 	}
@@ -57,10 +58,10 @@ public class FRCarKeyboardInputHandler extends FRInputAdapter{
 	
 	public boolean keyUp(int keycode) {
 		if (keycode == Input.Keys.DPAD_UP) {
-			carRef.accelerate = Accel.ACCELERATE;
+			carRef.accelerate = Accel.NONE;
 			return true;
 		} else if (keycode == Input.Keys.DPAD_DOWN) {
-			carRef.accelerate = Accel.ACCELERATE;
+			carRef.accelerate = Accel.NONE;
 			return true;
 		} else if (keycode == Input.Keys.DPAD_LEFT) {
 			carRef.steer = Steer.NONE;

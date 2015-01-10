@@ -33,7 +33,7 @@ public class Car {
 			String jsonFilePrefix) {
 		super();
 		this.steer = Steer.NONE;
-		this.accelerate = Accel.ACCELERATE;
+		this.accelerate = Accel.NONE;
 		this.width = width;
 		this.length = length;
 		this.angle = angle;

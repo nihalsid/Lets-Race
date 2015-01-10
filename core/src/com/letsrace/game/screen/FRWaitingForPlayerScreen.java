@@ -150,7 +150,7 @@ public class FRWaitingForPlayerScreen extends ScreenAdapter {
 		this.cannistor = FRAssets.cannister;
 		this.firedMissile = FRAssets.firedMissile;
 		this.explosion = FRAssets.explosion;
-
+		gameRef.stage.clear();
 		camera = new OrthographicCamera(300, 500);
 		camera.position.set(camera.viewportWidth / 2f,
 				camera.viewportHeight / 2f, 0);

@@ -55,7 +55,7 @@ nbactions.xml
 nb-configuration.xml
 
 ## Gradle
-
+android/project.properties
 .gradle
 gradle-app.setting
 build/

@@ -32,7 +32,7 @@ import com.letsrace.game.unused.FRAssets;
 public class FRArenaSelectScreen extends ScreenAdapter implements
 		GestureListener {
 
-	private LetsRace gameRef;
+	LetsRace gameRef;
 	SpriteBatch batch;
 	Camera camera;
 	Vector3 touchPoint;
@@ -56,7 +56,7 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 	private boolean showLeft = false, showRight = false;
 
 	public FRArenaSelectScreen(LetsRace letsRace) {
-		Gdx.app.log(FRConstants.TAG, "Menu: Constructor");
+		Gdx.app.log(FRConstants.TAG, "ArenaSelect: Constructor");
 		gameRef = letsRace;
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera(6, 10);
@@ -90,10 +90,6 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 		}
 	}
 
-	public void show() {
-		Gdx.app.log(FRConstants.TAG, "Menu: Show()");
-	}
-
 	@Override
 	public void render(float delta) {
 		GL20 gl = Gdx.gl;
@@ -115,10 +111,6 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 			endHint.draw(batch);
 		}
 		batch.end();
-	}
-
-	public void dispose() {
-		Gdx.app.log(FRConstants.TAG, "Arena: Dispose()");
 	}
 
 	@Override

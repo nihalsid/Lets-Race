@@ -15,6 +15,8 @@ import android.view.WindowManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
@@ -105,7 +107,7 @@ public class AndroidLauncher extends AndroidApplication implements
 		config.useAccelerometer = true;
 		config.useCompass = true;
 		game = new LetsRace(this);
-		messageHandler = new FRMessageHandler(game.network);
+		messageHandler = new FRMessageHandler();
 		initialize(game, config);
 	}
 
@@ -601,8 +603,7 @@ public class AndroidLauncher extends AndroidApplication implements
 	public void sendReliableMessage(byte[] message, String participantID) {
 		if (participantID.equals(mMyId)) {
 			Gdx.app.log(TAG, "Manual trigger onRealTimeMessageRecieved()");
-			messageHandler.onRealTimeMessageReceived(new RealTimeMessage(
-					participantID, message, RealTimeMessage.RELIABLE));
+			triggerMessageRecieveWithDelay(message);
 		} else
 			Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,
 					null, message, room.getRoomId(), participantID);
@@ -612,8 +613,7 @@ public class AndroidLauncher extends AndroidApplication implements
 		for (Participant p : mParticipants) {
 			if (p.getParticipantId().equals(mMyId)) {
 				Gdx.app.log(TAG, "Manual trigger onRealTimeMessageRecieved()");
-				messageHandler.onRealTimeMessageReceived(new RealTimeMessage(
-						mMyId, message, RealTimeMessage.UNRELIABLE));
+				triggerMessageRecieveWithDelay(message);
 			} else
 				Games.RealTimeMultiplayer.sendUnreliableMessage(
 						mGoogleApiClient, message, room.getRoomId(),
@@ -626,14 +626,23 @@ public class AndroidLauncher extends AndroidApplication implements
 		for (Participant p : mParticipants) {
 			if (p.getParticipantId().equals(mMyId)) {
 				Gdx.app.log(TAG, "Manual trigger onRealTimeMessageRecieved()");
-				messageHandler.onRealTimeMessageReceived(new RealTimeMessage(
-						mMyId, message, RealTimeMessage.RELIABLE));
+				triggerMessageRecieveWithDelay(message);
 			} else
 				Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,
 						null, message, room.getRoomId(), p.getParticipantId());
 		}
 	}
 
+	public void triggerMessageRecieveWithDelay(final byte[] message){
+		Timer.schedule(new Task() {
+			@Override
+			public void run() {
+				messageHandler.onRealTimeMessageReceived(new RealTimeMessage(
+						mMyId, message, RealTimeMessage.RELIABLE));
+			}
+		}, 0.1f);
+	}
+	
 	@Override
 	public void setServerListener(FRMessageListener listener) {
 		messageHandler.setServerMessageListener(listener);

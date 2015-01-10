@@ -17,7 +17,6 @@ import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.network.FRGameClient;
 import com.letsrace.game.network.FRGameServer;
 import com.letsrace.game.network.FRGoogleServices;
-import com.letsrace.game.network.FRNetwork;
 import com.letsrace.game.screen.FRArenaSelectScreen;
 import com.letsrace.game.screen.FRCarSelectScreen;
 import com.letsrace.game.screen.FRGameScreen;
@@ -39,28 +38,14 @@ public class LetsRace extends Game {
 	public HashMap<String, Integer> playerNumber;
 	public int myPlayerNo;
 	public FRGameClient client;
-	public FRNetwork network;
-
-	public String serverId;
-	public String myId;
-
+	public boolean multiplayer;
+	
+	
 	public LetsRace(FRGoogleServices services) {
 		googleServices = services;
 		playerNumber = new HashMap<String, Integer>();
-		network = new FRNetwork(googleServices);
 	}
 
-	public void setServerId(String serverId) {
-		this.serverId = serverId;
-	}
-
-	public void setMyId(String myId) {
-		this.myId = myId;
-	}
-
-	public boolean isServer() {
-		return myId.equals(serverId);
-	}
 
 	public void decideOnServerAndStart() {
 		ArrayList<String> list = googleServices.getParticipantIds();
@@ -110,7 +95,7 @@ public class LetsRace extends Game {
 		switch (screen) {
 		case GAME_SCREEN:
 			gameState = GameState.GAME_SCREEN;
-			setScreen(new FRGameScreen(this));
+			setScreen(new FRGameScreen(this, multiplayer));
 			break;
 		case MENU:
 			gameState = GameState.MENU;
