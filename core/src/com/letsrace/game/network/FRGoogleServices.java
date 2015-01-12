@@ -13,4 +13,6 @@ public interface FRGoogleServices {
 	public void broadcastMessage(byte[] message);
 	public void broadcastReliableMessage(byte[] message);
 	public boolean isSignedIn();
+	public String getSinglePlayerIds();
+	
 }	

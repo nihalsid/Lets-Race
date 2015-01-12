@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.letsrace.game.FRConstants;
 import com.letsrace.game.FRGameRenderer;
 import com.letsrace.game.FRGameWorld;
+import com.letsrace.game.GameWorld;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.input.FRCarKeyboardInputHandler;
 import com.letsrace.game.input.FRInputAdapter;
@@ -16,6 +17,7 @@ public class FRGameScreen extends ScreenAdapter{
 	public FRGameRenderer renderer;
 	public FRGameWorld gameWorldRef;
 	public FRInputAdapter adapter;
+
 	public FRGameScreen(LetsRace letsRace, boolean multiplayer) {
 		if(multiplayer){
 			Gdx.app.log(FRConstants.TAG, "GameScreen(): Constructor");

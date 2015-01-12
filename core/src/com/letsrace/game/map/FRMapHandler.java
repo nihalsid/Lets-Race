@@ -17,7 +17,7 @@ public class FRMapHandler{
 	public TiledMap tiledMap;
 	public World physicalWorldRef;
 	public Vector2[] initialPositionMarkers;
-	public FRAngleMonitor angleMon=new FRAngleMonitor(0.50f);
+	public FRAngleMonitor angleMon=new FRAngleMonitor(0.5f);
 	public Body mainCarBody;
 	
 	public FRMapHandler(World physicalWorld,String arenaName){
@@ -43,7 +43,9 @@ public class FRMapHandler{
 						lastBodyVector = mb.direction;
 					}
 				}
+			
 			}
+			
 		});
 	}
 	

@@ -14,6 +14,7 @@ public class FRMenuScreen extends ScreenAdapter {
 
 	private LetsRace gameRef;
 
+	boolean singlePlayerClicked = false;
 	public FRMenuScreen(LetsRace letsRace) {
 		Gdx.app.log(FRConstants.TAG, "Menu: Constructor");
 		gameRef = letsRace;
@@ -31,8 +32,7 @@ public class FRMenuScreen extends ScreenAdapter {
 		singleplayer.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				gameRef.multiplayer = false;
-				gameRef.moveToScreen(GameState.GAME_SCREEN);
+				singlePlayerClicked=true;
 			}
 		});
 		
@@ -63,6 +63,13 @@ public class FRMenuScreen extends ScreenAdapter {
 	public void render(float delta) {
 		GL20 gl = Gdx.gl;
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		if(singlePlayerClicked){
+			gameRef.multiplayer = false;
+			gameRef.setMyId("local");
+			gameRef.setServerId("local");
+			gameRef.setUpWorlds();
+			gameRef.moveToScreen(GameState.ARENA_SELECT);
+		}
 		gameRef.stage.draw();
 	}
 

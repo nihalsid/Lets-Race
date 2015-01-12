@@ -27,28 +27,38 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.letsrace.game.CameraTweenAccessor;
 import com.letsrace.game.FRConstants;
+import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.Message;
-import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.network.FRMessageCodes;
+import com.letsrace.game.network.ServerUtils;
 import com.letsrace.game.unused.FRAssets;
 
-public class FRArenaSelectScreen extends ScreenAdapter implements
-		GestureListener {
+public class CarSelectScreen extends ScreenAdapter implements GestureListener {
+
+	class Stat {
+		int P;
+		int A;
+		int S;
+	}
 
 	LetsRace gameRef;
 	SpriteBatch batch;
 	Camera camera;
 	Vector3 touchPoint;
-	ArrayList<String> arenaNames;
+	ArrayList<String> characterNames;
+	ArrayList<Stat> characterStats;
 	int currentPosition = 1;
 
 	Sprite logo;
 	Sprite heading;
-	Sprite trackOverview;
+
 	Sprite arrow;
 	Sprite background;
 	Sprite endHint;
+	Sprite power;
+	Sprite acceleration;
+	Sprite steering;
 
 	TweenManager tweenMgr;
 	GestureDetector gesture;
@@ -56,18 +66,18 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 	float camHalfWidth;
 	float camHalfHeight;
 
-	enum State {
-		WAITING_FOR_SERVER, IS_SERVER_SELECT_ARENA
-	}
-
 	private boolean isAnimating = false;
 	private boolean showLeft = false, showRight = false;
-	private State screenState;
 
-	public FRArenaSelectScreen(LetsRace letsRace) {
+	boolean isServer;
+
+	BitmapFont font;
+
+	ArrayList<Integer> selectedCarNumbers;
+
+	public CarSelectScreen(LetsRace letsRace) {
 		Gdx.app.log(FRConstants.TAG, "ArenaSelect: Constructor");
 		gameRef = letsRace;
-		gameRef.stage.clear();
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera(6, 10);
 		camHalfWidth = camera.viewportWidth / 2f;
@@ -76,28 +86,44 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		touchPoint = new Vector3();
-		if (gameRef.isServer()) {
-			screenState = State.IS_SERVER_SELECT_ARENA;
-			tweenMgr = new TweenManager();
-			gesture = new GestureDetector(this);
-			Gdx.input.setInputProcessor(gesture);
-			Tween.registerAccessor(Camera.class, new CameraTweenAccessor());
-			loadNames();
-		} else {
-			screenState = State.WAITING_FOR_SERVER;
-		}
+		tweenMgr = new TweenManager();
+		gesture = new GestureDetector(this);
+		Gdx.input.setInputProcessor(gesture);
+		Tween.registerAccessor(Camera.class, new CameraTweenAccessor());
+		font = new BitmapFont();
+		loadNames();
+		selectedCarNumbers = new ArrayList<Integer>();
+		isServer = gameRef.isServer();
 	}
 
 	private void loadNames() {
-		arenaNames = new ArrayList<String>();
-		FileHandle handle = Gdx.files.internal("arenaNames.txt");
+		characterNames = new ArrayList<String>();
+		characterStats = new ArrayList<CarSelectScreen.Stat>();
+		FileHandle handle = Gdx.files.internal("characterNames.txt");
 		if (handle.exists()) {
 			BufferedReader input = new BufferedReader(new InputStreamReader(
 					handle.read()));
 			String name;
 			try {
 				while ((name = input.readLine()) != null) {
-					arenaNames.add(name);
+					characterNames.add(name);
+					FileHandle statsHandle = Gdx.files.internal(name
+							+ "Stats.txt");
+					String stat;
+					Stat statObj = new Stat();
+					BufferedReader statInput = new BufferedReader(
+							new InputStreamReader(statsHandle.read()));
+
+					while ((stat = statInput.readLine()) != null) {
+						if (stat.charAt(0) == 'P') {
+							statObj.P = Integer.parseInt(stat.substring(2));
+						} else if (stat.charAt(0) == 'A') {
+							statObj.A = Integer.parseInt(stat.substring(2));
+						} else if (stat.charAt(0) == 'S') {
+							statObj.S = Integer.parseInt(stat.substring(2));
+						}
+					}
+					characterStats.add(statObj);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -111,41 +137,19 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 		gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		switch (screenState) {
-		case IS_SERVER_SELECT_ARENA:
-			updateSelect(delta);
-			renderSelect(delta);
-			break;
-		case WAITING_FOR_SERVER:
-			updateWaiting(delta);
-			renderWaiting(delta);
-			break;
+		if (isServer) {
+			updateServer(delta);
 		}
+
+		updateScreen(delta);
+		renderScreen(delta);
+
 	}
 
-	private void renderWaiting(float delta) {
-		batch.begin();
-		background = FRAssets.background;
-		background.setSize(camHalfWidth * 2, camHalfHeight * 2);
-		background.setPosition(0, 0);
-		background.draw(batch);
-		batch.end();
-	}
-
-	private void updateWaiting(float delta) {
-		Message msg;
-		while ((msg = gameRef.network.readFromClientQueue()) != null) {
-			if (msg.msg[0] == FRMessageCodes.ARENA_SELECTED) {
-				gameRef.setUpArena((int) msg.msg[1]);
-				gameRef.moveToScreen(GameState.SELECT_CAR);
-			}
-		}
-	}
-
-	private void renderSelect(float delta) {
+	private void renderScreen(float delta) {
 		tweenMgr.update(delta);
 		batch.begin();
-		endHint = FRAssets.arenaScreenAtlas.createSprite("endHint");
+		endHint = FRAssets.carScreenAtlas.createSprite("endHint");
 		renderTile(currentPosition);
 		renderTile(currentPosition - 1);
 		renderTile(currentPosition + 1);
@@ -161,34 +165,57 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 		batch.end();
 	}
 
-	private void updateSelect(float delta) {
+	private void updateScreen(float delta) {
 		Message msg;
 		while ((msg = gameRef.network.readFromClientQueue()) != null) {
-			if (msg.msg[0] == FRMessageCodes.ARENA_SELECTED) {
-				gameRef.setUpArena((int) msg.msg[1]);
-				gameRef.moveToScreen(GameState.SELECT_CAR);
+			if (msg.msg[0] == FRMessageCodes.CAR_SELECTED) {
+				selectedCarNumbers.add((int) msg.msg[1]);
+			}
+			if (msg.msg[0] == FRMessageCodes.CAR_SELECTION_CONFIRMED) {
+				gameRef.clientWorld.players.get(gameRef.myId).playerType = msg.msg[1];
+				gameRef.moveToScreen(GameState.GAME_SCREEN);
+			}
+		}
+	}
+
+	private void updateServer(float delta) {
+		Message msg;
+		while ((msg = gameRef.network.readFromServerQueue()) != null) {
+			if (msg.msg[0] == FRMessageCodes.SELECT_CAR) {
+				Gdx.app.log(FRConstants.TAG, "Car Select Message Received");
+				int carNumber = msg.msg[1];
+				if (ServerUtils.isCarSelected(gameRef.serverWorld, carNumber)) {
+					byte[] message = new byte[1];
+					message[0] = FRMessageCodes.CAR_SELECTED;
+					gameRef.network.broadcastMessage(new Message(message,
+							msg.id));
+				} else {
+					gameRef.serverWorld.players.get(msg.id).playerType = carNumber;
+					byte[] message = new byte[3];
+					message[0] = FRMessageCodes.CAR_SELECTION_CONFIRMED;
+					message[1] = (byte) carNumber;
+					gameRef.network.sendToClient(new Message(message, msg.id));
+				}
 			}
 		}
 	}
 
 	@Override
 	public boolean touchDown(float x, float y, int pointer, int button) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
 		byte message[] = new byte[2];
-		message[0] = FRMessageCodes.ARENA_SELECTED;
-		message[1] = (byte) currentPosition;		
-		gameRef.network.sendToClient(new Message(message, ""));
+		message[0] = FRMessageCodes.SELECT_CAR;
+		message[1] = (byte) currentPosition;
+		gameRef.network.sendToServer(new Message(message, gameRef.serverId));
 		return true;
 	}
 
 	@Override
 	public boolean longPress(float x, float y) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -224,7 +251,7 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 
 	private void moveRight() {
 		Gdx.app.log(FRConstants.TAG, "Move Right !");
-		if (currentPosition < arenaNames.size()) {
+		if (currentPosition < characterNames.size()) {
 			currentPosition = currentPosition + 1;
 			Tween.to(camera, CameraTweenAccessor.POSITION, 1.0f)
 					.target((currentPosition - 1) * camHalfWidth * 2
@@ -258,21 +285,20 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 	}
 
 	@Override
-	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2,
-			Vector2 pointer1, Vector2 pointer2) {
+	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
 		return false;
 	}
 
 	private void renderTile(int pos) {
-		if (pos < 1 || pos > arenaNames.size()) {
+		if (pos < 1 || pos > characterNames.size()) {
 			return;
 		} else {
 			batch.setProjectionMatrix(camera.combined);
-			String name = arenaNames.get(pos - 1);
-			logo = FRAssets.arenaScreenAtlas.createSprite(name + "Logo");
-			heading = FRAssets.arenaScreenAtlas.createSprite(name + "Heading");
-			trackOverview = FRAssets.arenaScreenAtlas.createSprite(name
-					+ "Track");
+			String name = characterNames.get(pos - 1);
+			Stat statObj = characterStats.get(pos - 1);
+
+			logo = FRAssets.carScreenAtlas.createSprite(name + "Logo");
+			heading = FRAssets.carScreenAtlas.createSprite(name + "Title");
 
 			float xOffset = (pos - 1) * camHalfWidth * 2;
 
@@ -280,21 +306,22 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 			background.setSize(camHalfWidth * 2, camHalfHeight * 2);
 			background.setPosition(xOffset, 0);
 
-			arrow = FRAssets.arenaScreenAtlas.createSprite("nextArrow");
+			arrow = FRAssets.carScreenAtlas.createSprite("nextArrow");
 
 			heading.setSize(5, 1);
 			heading.setPosition(0.5f + xOffset, 8);
 
-			logo.setSize(5, 4);
+			logo.setSize(4, 4);
 			logo.setPosition(1 + xOffset, 3.5f);
 
-			trackOverview.setSize(3.5f, 2.0f);
-			trackOverview.setPosition(xOffset + 1.25f, 1.0f);
-
+			if (selectedCarNumbers.contains(pos)) {
+				heading.setColor(background.getColor().r, background.getColor().g, background.getColor().b, 0.60f);
+				logo.setColor(background.getColor().r, background.getColor().g, background.getColor().b, 0.60f);
+			}
+			
 			background.draw(batch);
 			heading.draw(batch);
 			logo.draw(batch);
-			trackOverview.draw(batch);
 
 			if (!isAnimating) {
 				arrow.setSize(0.5f, 1.2f);
@@ -302,12 +329,29 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 					arrow.setPosition(xOffset + 0.2f, camHalfHeight);
 					arrow.draw(batch);
 				}
-				if (currentPosition < arenaNames.size()) {
+				if (currentPosition < characterNames.size()) {
 					arrow.flip(true, false);
 					arrow.setPosition(xOffset + 0.2f + 5f, camHalfHeight);
 					arrow.draw(batch);
 				}
 			}
+
+			Sprite power = FRAssets.powerBar;
+			Sprite steeringbar = FRAssets.steeringBar;
+			Sprite accnBar = FRAssets.accnBar;
+
+			accnBar.setSize(statObj.A * 0.75f, 0.3f);
+			accnBar.setPosition(xOffset + 1.5f, 0.9f);
+
+			power.setSize(statObj.P * 0.75f, 0.3f);
+			power.setPosition(xOffset + 1.5f, 1.3f);
+
+			steeringbar.setSize(statObj.S * 0.75f, 0.3f);
+			steeringbar.setPosition(xOffset + 1.5f, 1.7f);
+
+			power.draw(batch);
+			steeringbar.draw(batch);
+			accnBar.draw(batch);
 
 		}
 	}

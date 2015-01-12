@@ -3,9 +3,9 @@ package com.letsrace.game;
 import com.letsrace.game.car.Car;
 
 public class Player {
-	String name;
-	Car car;
-	int playerType;
+	public String name;
+	public Car car;
+	public int playerType;
 
 	public enum PlayerState {
 		HIT, BOOSTED, RUNNING

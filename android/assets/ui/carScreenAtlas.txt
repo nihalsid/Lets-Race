@@ -1,0 +1,53 @@
+carScreenAtlas.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+accelerationBar
+  rotate: false
+  xy: 2, 2
+  size: 100, 32
+  orig: 100, 32
+  offset: 0, 0
+  index: -1
+darkFakerLogo
+  rotate: false
+  xy: 104, 2
+  size: 350, 350
+  orig: 350, 350
+  offset: 0, 0
+  index: -1
+darkFakerTitle
+  rotate: false
+  xy: 2, 354
+  size: 300, 66
+  orig: 300, 66
+  offset: 0, 0
+  index: -1
+endHint
+  rotate: false
+  xy: 304, 354
+  size: 100, 161
+  orig: 100, 161
+  offset: 0, 0
+  index: -1
+nextArrow
+  rotate: false
+  xy: 406, 354
+  size: 38, 86
+  orig: 38, 86
+  offset: 0, 0
+  index: -1
+powerBar
+  rotate: false
+  xy: 2, 517
+  size: 100, 32
+  orig: 100, 32
+  offset: 0, 0
+  index: -1
+steeringBar
+  rotate: false
+  xy: 104, 517
+  size: 100, 32
+  orig: 100, 32
+  offset: 0, 0
+  index: -1

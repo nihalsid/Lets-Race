@@ -19,6 +19,7 @@ public class FRAssets {
 
 	public static TextureAtlas arenaScreenAtlas;
 	public static TextureAtlas playerAsset;
+	public static TextureAtlas carScreenAtlas;
 	public static Animation explosion;
 
 	public static Sprite cannister;
@@ -27,9 +28,17 @@ public class FRAssets {
 	public static Sprite vaderCarBody;
 	public static Animation wheel;
 
+	public static Sprite powerBar;
+	public static Sprite accnBar;
+	public static Sprite steeringBar;
+	
 	public static void load() {
 		uiButtonsAtlas = new TextureAtlas("ui/ui_icons.pack");
 		playerAsset = new TextureAtlas("ui/playerAssetsAtlas.txt");
+		carScreenAtlas = new TextureAtlas("ui/carScreenAtlas.txt");
+		powerBar = carScreenAtlas.createSprite("powerBar");
+		steeringBar=carScreenAtlas.createSprite("steeringBar");
+		accnBar=carScreenAtlas.createSprite("accelerationBar");
 		explosion = new Animation(false, 1 / 60f, playerAsset, "explosion", 41);
 		cannister = playerAsset.createSprite("cannister", 1);
 		vaderFullCar = playerAsset.createSprite("vaderCar_NoWeapon");

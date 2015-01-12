@@ -63,7 +63,7 @@ public class FRMultiplayerMenuScreen extends ScreenAdapter {
 		checkinvites.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				gameRef.moveToScreen(GameState.CAR_SELECT);
+				gameRef.moveToScreen(GameState.SELECT_CAR);
 			}
 		});
 
