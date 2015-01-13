@@ -16,7 +16,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
@@ -28,9 +27,6 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.letsrace.game.CameraTweenAccessor;
 import com.letsrace.game.FRConstants;
 import com.letsrace.game.LetsRace;
-import com.letsrace.game.Message;
-import com.letsrace.game.FRConstants.GameState;
-import com.letsrace.game.network.FRMessageCodes;
 import com.letsrace.game.unused.FRAssets;
 
 public class FRArenaSelectScreen extends ScreenAdapter implements
@@ -56,18 +52,12 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 	float camHalfWidth;
 	float camHalfHeight;
 
-	enum State {
-		WAITING_FOR_SERVER, IS_SERVER_SELECT_ARENA
-	}
-
 	private boolean isAnimating = false;
 	private boolean showLeft = false, showRight = false;
-	private State screenState;
 
 	public FRArenaSelectScreen(LetsRace letsRace) {
 		Gdx.app.log(FRConstants.TAG, "ArenaSelect: Constructor");
 		gameRef = letsRace;
-		gameRef.stage.clear();
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera(6, 10);
 		camHalfWidth = camera.viewportWidth / 2f;
@@ -76,16 +66,11 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		touchPoint = new Vector3();
-		if (gameRef.isServer()) {
-			screenState = State.IS_SERVER_SELECT_ARENA;
-			tweenMgr = new TweenManager();
-			gesture = new GestureDetector(this);
-			Gdx.input.setInputProcessor(gesture);
-			Tween.registerAccessor(Camera.class, new CameraTweenAccessor());
-			loadNames();
-		} else {
-			screenState = State.WAITING_FOR_SERVER;
-		}
+		tweenMgr = new TweenManager();
+		gesture = new GestureDetector(this);
+		Gdx.input.setInputProcessor(gesture);
+		Tween.registerAccessor(Camera.class, new CameraTweenAccessor());
+		loadNames();
 	}
 
 	private void loadNames() {
@@ -110,39 +95,6 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 		GL20 gl = Gdx.gl;
 		gl.glClearColor(0.8f, 0.8f, 0.8f, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		switch (screenState) {
-		case IS_SERVER_SELECT_ARENA:
-			updateSelect(delta);
-			renderSelect(delta);
-			break;
-		case WAITING_FOR_SERVER:
-			updateWaiting(delta);
-			renderWaiting(delta);
-			break;
-		}
-	}
-
-	private void renderWaiting(float delta) {
-		batch.begin();
-		background = FRAssets.background;
-		background.setSize(camHalfWidth * 2, camHalfHeight * 2);
-		background.setPosition(0, 0);
-		background.draw(batch);
-		batch.end();
-	}
-
-	private void updateWaiting(float delta) {
-		Message msg;
-		while ((msg = gameRef.network.readFromClientQueue()) != null) {
-			if (msg.msg[0] == FRMessageCodes.ARENA_SELECTED) {
-				gameRef.setUpArena((int) msg.msg[1]);
-				gameRef.moveToScreen(GameState.SELECT_CAR);
-			}
-		}
-	}
-
-	private void renderSelect(float delta) {
 		tweenMgr.update(delta);
 		batch.begin();
 		endHint = FRAssets.arenaScreenAtlas.createSprite("endHint");
@@ -161,16 +113,6 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 		batch.end();
 	}
 
-	private void updateSelect(float delta) {
-		Message msg;
-		while ((msg = gameRef.network.readFromClientQueue()) != null) {
-			if (msg.msg[0] == FRMessageCodes.ARENA_SELECTED) {
-				gameRef.setUpArena((int) msg.msg[1]);
-				gameRef.moveToScreen(GameState.SELECT_CAR);
-			}
-		}
-	}
-
 	@Override
 	public boolean touchDown(float x, float y, int pointer, int button) {
 		// TODO Auto-generated method stub
@@ -179,11 +121,8 @@ public class FRArenaSelectScreen extends ScreenAdapter implements
 
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
-		byte message[] = new byte[2];
-		message[0] = FRMessageCodes.ARENA_SELECTED;
-		message[1] = (byte) currentPosition;		
-		gameRef.network.sendToClient(new Message(message, ""));
-		return true;
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override

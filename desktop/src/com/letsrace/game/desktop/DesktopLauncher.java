@@ -42,16 +42,10 @@ public class DesktopLauncher implements FRGoogleServices {
 		return null;
 	}
 
+	@Override
 	public ArrayList<String> getParticipantIds() {
-		if (!game.multiplayer) {
-			ArrayList<String> local = new ArrayList<String>();
-			local.add("local");
-			return local;
-		} else {
-			ArrayList<String> local = new ArrayList<String>();
-			local.add("local");
-			return local;
-		}
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -102,12 +96,6 @@ public class DesktopLauncher implements FRGoogleServices {
 		};
 		Timer.schedule(action, 4);
 		return false;
-	}
-
-	@Override
-	public String getSinglePlayerIds() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

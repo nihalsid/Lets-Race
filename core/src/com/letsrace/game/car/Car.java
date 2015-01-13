@@ -204,5 +204,5 @@ public class Car {
 	public void setTransform(float posX, float posY, float cBodyAngle) {
 		this.body.setTransform(posX, posY, cBodyAngle);
 	}
-	
+
 }

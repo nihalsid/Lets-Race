@@ -13,7 +13,7 @@ public class FRGameWorld {
 	
 	public FRGameWorld(){
 		physicalWorld = new World(new Vector2(0.0f, 0.0f), true);
-		mapHandler = new FRMapHandler(physicalWorld,"beach_track_draft_two.tmx");
+		mapHandler = new FRMapHandler(physicalWorld);
 		carHandler = new FRCarHandler(physicalWorld, mapHandler.initialPositionMarkers);
 	}
 	

@@ -1,39 +1,7 @@
 package com.letsrace.game.network;
 
 
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_DOWN_PLAYER_0;
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_DOWN_PLAYER_1;
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_DOWN_PLAYER_2;
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_DOWN_PLAYER_3;
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_UP_PLAYER_0;
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_UP_PLAYER_1;
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_UP_PLAYER_2;
-import static com.letsrace.game.network.FRMessageCodes.ACCEL_UP_PLAYER_3;
-import static com.letsrace.game.network.FRMessageCodes.CAR_PICK_CONFIRMED_PLAYER_0;
-import static com.letsrace.game.network.FRMessageCodes.CAR_PICK_CONFIRMED_PLAYER_1;
-import static com.letsrace.game.network.FRMessageCodes.CAR_PICK_CONFIRMED_PLAYER_2;
-import static com.letsrace.game.network.FRMessageCodes.CAR_PICK_CONFIRMED_PLAYER_3;
-import static com.letsrace.game.network.FRMessageCodes.NO_ACCELERATE_PLAYER_0;
-import static com.letsrace.game.network.FRMessageCodes.NO_ACCELERATE_PLAYER_1;
-import static com.letsrace.game.network.FRMessageCodes.NO_ACCELERATE_PLAYER_2;
-import static com.letsrace.game.network.FRMessageCodes.NO_ACCELERATE_PLAYER_3;
-import static com.letsrace.game.network.FRMessageCodes.PING_DETECT_REQ;
-import static com.letsrace.game.network.FRMessageCodes.PING_DETECT_RES;
-import static com.letsrace.game.network.FRMessageCodes.PROCEED_TO_GAME_SCREEN;
-import static com.letsrace.game.network.FRMessageCodes.REPICK_CAR;
-import static com.letsrace.game.network.FRMessageCodes.RESYNC_HEAD;
-import static com.letsrace.game.network.FRMessageCodes.STEER_STRAIGHT_PLAYER_0;
-import static com.letsrace.game.network.FRMessageCodes.STEER_STRAIGHT_PLAYER_1;
-import static com.letsrace.game.network.FRMessageCodes.STEER_STRAIGHT_PLAYER_2;
-import static com.letsrace.game.network.FRMessageCodes.STEER_STRAIGHT_PLAYER_3;
-import static com.letsrace.game.network.FRMessageCodes.TURN_LEFT_PLAYER_0;
-import static com.letsrace.game.network.FRMessageCodes.TURN_LEFT_PLAYER_1;
-import static com.letsrace.game.network.FRMessageCodes.TURN_LEFT_PLAYER_2;
-import static com.letsrace.game.network.FRMessageCodes.TURN_LEFT_PLAYER_3;
-import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_0;
-import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_1;
-import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_2;
-import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_3;
+import static com.letsrace.game.network.FRMessageCodes.*;
 
 import java.nio.ByteBuffer;
 

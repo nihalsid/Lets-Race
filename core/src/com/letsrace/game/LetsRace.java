@@ -17,16 +17,14 @@ import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.network.FRGameClient;
 import com.letsrace.game.network.FRGameServer;
 import com.letsrace.game.network.FRGoogleServices;
-import com.letsrace.game.network.FRNetwork;
-import com.letsrace.game.screen.CarSelectScreen;
 import com.letsrace.game.screen.FRArenaSelectScreen;
+import com.letsrace.game.screen.FRCarSelectScreen;
 import com.letsrace.game.screen.FRGameScreen;
 import com.letsrace.game.screen.FRMenuScreen;
 import com.letsrace.game.screen.FRMultiplayerMenuScreen;
 import com.letsrace.game.screen.FRSplashScreen;
 import com.letsrace.game.screen.FRWaitScreen;
 import com.letsrace.game.screen.FRWaitingForPlayerScreen;
-import com.letsrace.game.screen.GameScreen;
 import com.letsrace.game.unused.FRAssets;
 
 public class LetsRace extends Game {
@@ -41,74 +39,11 @@ public class LetsRace extends Game {
 	public int myPlayerNo;
 	public FRGameClient client;
 	public boolean multiplayer;
-	public FRNetwork network;
-	public String serverId;
-	public String myId;
-	public String arenaName;
-
-	public GameWorld serverWorld;
-	public GameWorld clientWorld;
-
-	public void setServerId(String serverId) {
-		this.serverId = serverId;
-	}
-
-	public void setMyId(String myId) {
-		this.myId = myId;
-	}
-
-	public void setArenaName(String arenaName) {
-		this.arenaName = arenaName;
-	}
-
-	public boolean isServer() {
-		if (serverId == null || myId == null) {
-			return false;
-		}
-		return myId.equals(serverId);
-	}
-
+	
+	
 	public LetsRace(FRGoogleServices services) {
 		googleServices = services;
 		playerNumber = new HashMap<String, Integer>();
-		network = new FRNetwork(this);
-	}
-
-	public void setUpWorlds() {
-		if (isServer()) {
-			serverWorld = new GameWorld();
-			clientWorld = new GameWorld();
-			for (String id : this.googleServices.getParticipantIds()) {
-				serverWorld.addPlayer(id, id, -1);
-				clientWorld.addPlayer(id, id, -1);
-			}
-		} else {
-			clientWorld = new GameWorld();
-			for (String id : googleServices.getParticipantIds()) {
-				clientWorld.addPlayer(id, id, -1);
-			}
-		}
-	}
-
-	public void setUpArena(int arenaNumber) {
-		if (isServer()) {
-			this.serverWorld.arenaNumber = arenaNumber;
-			this.serverWorld.setUpArena(arenaName);
-			this.clientWorld.arenaNumber = arenaNumber;
-			this.clientWorld.setUpArena(arenaName);
-		} else {
-			this.clientWorld.arenaNumber = arenaNumber;
-			this.clientWorld.setUpArena(arenaName);
-		}
-	}
-
-	public void setUpCars() {
-		if (isServer()) {
-			this.serverWorld.setUpCars();
-			this.clientWorld.setUpCars();
-		} else {
-			this.clientWorld.setUpCars();
-		}
 	}
 
 	public void decideOnServerAndStart() {
@@ -159,7 +94,7 @@ public class LetsRace extends Game {
 		switch (screen) {
 		case GAME_SCREEN:
 			gameState = GameState.GAME_SCREEN;
-			setScreen(new GameScreen(this));
+			setScreen(new FRGameScreen(this, multiplayer));
 			break;
 		case MENU:
 			gameState = GameState.MENU;
@@ -171,7 +106,7 @@ public class LetsRace extends Game {
 			break;
 		case SELECT_CAR:
 			gameState = GameState.SELECT_CAR;
-			setScreen(new CarSelectScreen(this));
+			setScreen(new FRCarSelectScreen(this));
 			break;
 		case SPLASH:
 			gameState = GameState.SPLASH;

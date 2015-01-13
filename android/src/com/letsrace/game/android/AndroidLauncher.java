@@ -1,7 +1,6 @@
 package com.letsrace.game.android;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
@@ -108,12 +107,8 @@ public class AndroidLauncher extends AndroidApplication implements
 		config.useAccelerometer = true;
 		config.useCompass = true;
 		game = new LetsRace(this);
-		messageHandler = new FRMessageHandler(game.network);
+		messageHandler = new FRMessageHandler();
 		initialize(game, config);
-	}
-
-	public ArrayList<Participant> getmParticipants() {
-		return mParticipants;
 	}
 
 	@Override
@@ -444,7 +439,6 @@ public class AndroidLauncher extends AndroidApplication implements
 							connectionResult, RC_SIGN_IN,
 							getString(R.string.other_error));
 		}
-
 		// TODO: Quit game
 	}
 
@@ -598,19 +592,7 @@ public class AndroidLauncher extends AndroidApplication implements
 	}
 
 	public ArrayList<String> getParticipantIds() {
-		if (!game.multiplayer) {
-			ArrayList<String> local = new ArrayList<String>();
-			local.add("local");
-			return local;
-		} else {
-			ArrayList<String> participants = room.getParticipantIds();
-			participants.sort(new Comparator<String>() {
-				public int compare(String o1, String o2) {
-					return o1.compareTo(o2);
-				}
-			});
-			return participants;
-		}
+		return room.getParticipantIds();
 	}
 
 	public String getMyId() {
@@ -650,7 +632,7 @@ public class AndroidLauncher extends AndroidApplication implements
 		}
 	}
 
-	public void triggerMessageRecieveWithDelay(final byte[] message) {
+	public void triggerMessageRecieveWithDelay(final byte[] message){
 		Timer.schedule(new Task() {
 			@Override
 			public void run() {
@@ -659,7 +641,7 @@ public class AndroidLauncher extends AndroidApplication implements
 			}
 		}, 0.1f);
 	}
-
+	
 	@Override
 	public void setServerListener(FRMessageListener listener) {
 		messageHandler.setServerMessageListener(listener);
@@ -673,10 +655,5 @@ public class AndroidLauncher extends AndroidApplication implements
 	@Override
 	public boolean isSignedIn() {
 		return mGoogleApiClient != null && mGoogleApiClient.isConnected();
-	}
-
-	@Override
-	public String getSinglePlayerIds() {
-		return "local";
 	}
 }
