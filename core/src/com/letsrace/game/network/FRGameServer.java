@@ -63,12 +63,10 @@ public class FRGameServer implements FRMessageListener, Runnable {
 			relayMessage(buffer[0], senderParticipantId);
 			break;
 		case ACCEL_UP:
-			System.out.println("SERVER:: ACCEL_UP@ "+System.currentTimeMillis());
 			gameWorld.carHandler.cars.get(gameRef.playerNumber.get(senderParticipantId)).accelerate = Accel.ACCELERATE;
 			relayMessage(buffer[0], senderParticipantId);
 			break;
 		case NO_ACCELERATE:
-			System.out.println("SERVER:: ACCEL_NONE@ "+System.currentTimeMillis());
 			gameWorld.carHandler.cars.get(gameRef.playerNumber.get(senderParticipantId)).accelerate = Accel.NONE;
 			relayMessage(buffer[0], senderParticipantId);
 			break;
@@ -107,7 +105,7 @@ public class FRGameServer implements FRMessageListener, Runnable {
 					@Override
 					public void run() {
 						FRGameServer.this.gameWorld.update(1f/FRConstants.SYNC_PACKETS_PER_SEC);
-//						FRGameServer.this.gameRef.googleServices.broadcastMessage(generateSyncPacket());
+						FRGameServer.this.gameRef.googleServices.broadcastMessage(generateSyncPacket());
 					}
 				}, FRConstants.SYNC_PACKETS_START_DELAY, 1f/FRConstants.SYNC_PACKETS_PER_SEC);
 

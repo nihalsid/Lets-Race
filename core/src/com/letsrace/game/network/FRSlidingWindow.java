@@ -19,9 +19,13 @@ public class FRSlidingWindow {
 			messages[i] = null;
 		}
 	}
-
+	
+	int noOfPacketsBuffered = 0;
+	
 	public Message get() {
+		System.out.println("PB:"+noOfPacketsBuffered);
 		Message retval = valid[ticker] ? messages[ticker] : null;
+		noOfPacketsBuffered = noOfPacketsBuffered - ((retval==null)?0:1);
 		valid[ticker] = false;
 		valid[(ticker + size) % valid.length] = true;
 		messages[ticker] = null;
@@ -30,7 +34,9 @@ public class FRSlidingWindow {
 	}
 	
 	public void put(Message m){
-		if (valid[m.msg[1]+128])
+		if (valid[m.msg[1]+128]){
+			noOfPacketsBuffered+=1;
 			messages[m.msg[1]+128]=m;
+		}
 	}
 }

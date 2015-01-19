@@ -39,7 +39,6 @@ public class FRNetworkInputHandler extends FRInputAdapter{
 			byte[] msg = new byte[1];
 			msg[0] = FRMessageCodes.ACCEL_UP;
 			networkServices.sendReliableMessage(msg, serverID);
-			System.out.println("CLIENT:: ACCEL_UP@ "+System.currentTimeMillis());
 			myCar.accelerate = Accel.ACCELERATE;
 			return true;
 		} else if (keycode == Input.Keys.DPAD_DOWN) {
@@ -96,7 +95,6 @@ public class FRNetworkInputHandler extends FRInputAdapter{
 			msg[0] = FRMessageCodes.NO_ACCELERATE;
 			networkServices.sendReliableMessage(msg, serverID);
 			myCar.accelerate = Accel.NONE;
-			System.out.println("CLIENT:: ACCEL_NONE@ "+System.currentTimeMillis());
 			return true;
 		} else if (keycode == Input.Keys.DPAD_DOWN) {
 			byte[] msg = new byte[1];

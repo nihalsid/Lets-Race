@@ -38,7 +38,6 @@ import static com.letsrace.game.network.FRMessageCodes.TURN_RIGHT_PLAYER_3;
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.letsrace.game.FRConstants;
@@ -86,7 +85,6 @@ public class FRGameClient implements FRMessageListener{
 		case ACCEL_UP_PLAYER_1:
 		case ACCEL_UP_PLAYER_2:
 		case ACCEL_UP_PLAYER_3:
-			System.out.println("CLIENT:: ACCEL_UP@ "+System.currentTimeMillis());
 			playerNo = FRMessageCodes.extractHeaderExtField(buffer[0]);
 			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - AccelUp: P"+playerNo);
 			gameWorld.carHandler.cars.get(playerNo).accelerate = Accel.ACCELERATE;
@@ -95,7 +93,6 @@ public class FRGameClient implements FRMessageListener{
 		case NO_ACCELERATE_PLAYER_1:
 		case NO_ACCELERATE_PLAYER_2:
 		case NO_ACCELERATE_PLAYER_3:
-			System.out.println("CLIENT:: ACCEL_NONE@ "+System.currentTimeMillis());
 			playerNo = FRMessageCodes.extractHeaderExtField(buffer[0]);
 			Gdx.app.log(FRConstants.TAG, "FRGameClient(): MessageRecieved - AccelNone: P"+playerNo);
 			gameWorld.carHandler.cars.get(playerNo).accelerate = Accel.NONE;
@@ -207,7 +204,7 @@ public class FRGameClient implements FRMessageListener{
 					handleSyncPacket(m.msg);
 				}
 			}
-		},0,1f/FRConstants.SYNC_PACKETS_PER_SEC);
+		},4f/FRConstants.SYNC_PACKETS_PER_SEC,1f/FRConstants.SYNC_PACKETS_PER_SEC);
 	}
 	public void update(){
 		Message msg;
