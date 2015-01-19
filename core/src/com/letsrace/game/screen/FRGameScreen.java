@@ -7,7 +7,6 @@ import com.letsrace.game.FRConstants;
 import com.letsrace.game.FRGameRenderer;
 import com.letsrace.game.FRGameWorld;
 import com.letsrace.game.LetsRace;
-import com.letsrace.game.input.FRCarKeyboardInputHandler;
 import com.letsrace.game.input.FRInputAdapter;
 import com.letsrace.game.input.FRNetworkInputHandler;
 
@@ -16,24 +15,14 @@ public class FRGameScreen extends ScreenAdapter{
 	public FRGameRenderer renderer;
 	public FRGameWorld gameWorldRef;
 	public FRInputAdapter adapter;
-	public FRGameScreen(LetsRace letsRace, boolean multiplayer) {
-		if(multiplayer){
+	public FRGameScreen(LetsRace letsRace) {
 			Gdx.app.log(FRConstants.TAG, "GameScreen(): Constructor");
 			this.gameRef = letsRace;
 			gameWorldRef = gameRef.client.gameWorld;
 			gameRef.stage.clear();
-			renderer = new FRGameRenderer(gameRef.myPlayerNo, gameWorldRef, gameRef.stage.getBatch());
-			adapter = new FRNetworkInputHandler(gameRef.googleServices, gameRef.client.serverID);
+			renderer = new FRGameRenderer(gameRef.myPlayerNo, gameWorldRef,gameRef.server.gameWorld, gameRef.stage.getBatch());
+			adapter = new FRNetworkInputHandler(gameRef.googleServices, gameRef.client.serverID, gameRef.client.gameWorld.carHandler.cars.get(gameRef.myPlayerNo));
 			Gdx.input.setInputProcessor(adapter);
-		}else{
-			Gdx.app.log(FRConstants.TAG, "GameScreen(): Constructor");
-			this.gameRef = letsRace;
-			gameWorldRef = new FRGameWorld();
-			gameWorldRef.carHandler.addCar(0, 0);
-			renderer = new FRGameRenderer(0, gameWorldRef, gameRef.batch);
-			adapter = new FRCarKeyboardInputHandler(gameWorldRef.carHandler.cars.get(0));
-			Gdx.input.setInputProcessor(adapter);
-		}
 	}
 	
 	@Override
@@ -50,7 +39,8 @@ public class FRGameScreen extends ScreenAdapter{
 	}
 
 	private void update(float delta) {
-		gameWorldRef.update(delta);
+		gameWorldRef.update(1f/FRConstants.SYNC_PACKETS_PER_SEC);
+		gameRef.client.update();
 	}
 
 }

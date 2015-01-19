@@ -4,8 +4,6 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.letsrace.game.Message;
-
 public class FRQueueHandler {
 	Queue<Message> queue;
 

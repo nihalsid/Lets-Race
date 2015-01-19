@@ -13,14 +13,17 @@ import com.letsrace.game.map.OrthogonalTiledMapRenderer;
 
 public class FRGameRenderer {
 	FRGameWorld worldRef;
+	FRGameWorld worldRef2;
+	
 	Box2DDebugRenderer debugRenderer;
 	OrthographicCamera cam;
 	SpriteBatch batch;
 	TiledMapRenderer tiledMapRenderer;
 	int carNumber;
 	
-	public FRGameRenderer(int myCarNumber, FRGameWorld world, Batch batch){
+	public FRGameRenderer(int myCarNumber, FRGameWorld world,FRGameWorld serverWorld, Batch batch){
 		worldRef = world;
+		worldRef2 = serverWorld;
 		carNumber = myCarNumber;
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
@@ -39,5 +42,6 @@ public class FRGameRenderer {
 		Matrix4 debugMat = new Matrix4(cam.combined);
 		debugMat.scale(PIXELS_PER_UNIT, PIXELS_PER_UNIT, 1f);
 		debugRenderer.render(worldRef.physicalWorld, debugMat);
+		debugRenderer.render(worldRef2.physicalWorld, debugMat);
 	}
 }

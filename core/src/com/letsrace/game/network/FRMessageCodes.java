@@ -49,6 +49,54 @@ public class FRMessageCodes {
 		return (byte) (msg&0x07);
 	}
 	public static byte convertToCorrespondingPlayerMessageCode(byte msg, int playerNumber){
-		return (byte) ((msg|0x80)|(playerNumber&0x07));
+		return (byte) ((msg&0x7F)|(playerNumber&0x07));
+	}
+	public static String nameFromHeader(byte b){
+		switch(b){
+		case SELECTED_CAR_0: return "SELECTED_CAR_0";
+		case  SELECTED_CAR_1: return "SELECTED_CAR_1";
+		case  SELECTED_CAR_2: return "SELECTED_CAR_2";
+		case  SELECTED_CAR_3: return "SELECTED_CAR_3";
+		case  PROCEED_TO_GAME_SCREEN: return "PROCEED_TO_GAME_SCREEN";
+		case  PING_DETECT_REQ: return"PING_DETECT_REQ";
+		case  PING_DETECT_RES: return"PING_DETECT_RES";
+		case  CAR_PICK_CONFIRMED_PLAYER_0: return "CAR_PICK_CONFIRMED_PLAYER_0";
+		case  CAR_PICK_CONFIRMED_PLAYER_1: return "CAR_PICK_CONFIRMED_PLAYER_1";
+		case  CAR_PICK_CONFIRMED_PLAYER_2: return "CAR_PICK_CONFIRMED_PLAYER_2";
+		case  CAR_PICK_CONFIRMED_PLAYER_3: return "CAR_PICK_CONFIRMED_PLAYER_3";
+		case  REPICK_CAR: return "REPICK_CAR";
+		case  RESYNC_HEAD: return "RESYNC_HEAD";
+		case  ACCEL_DOWN: return "ACCEL_DOWN";
+		case  ACCEL_DOWN_PLAYER_0: return "ACCEL_DOWN_PLAYER_0";
+		case  ACCEL_DOWN_PLAYER_1: return "ACCEL_DOWN_PLAYER_1";
+		case  ACCEL_DOWN_PLAYER_2: return "ACCEL_DOWN_PLAYER_2";
+		case  ACCEL_DOWN_PLAYER_3: return "ACCEL_DOWN_PLAYER_3";
+		case  ACCEL_UP: return "ACCEL_UP";
+		case  ACCEL_UP_PLAYER_0: return "ACCEL_UP_PLAYER_0";
+		case  ACCEL_UP_PLAYER_1: return "ACCEL_UP_PLAYER_1";
+		case  ACCEL_UP_PLAYER_2: return "ACCEL_UP_PLAYER_2";
+		case  ACCEL_UP_PLAYER_3: return "ACCEL_UP_PLAYER_3";
+		case  TURN_LEFT: return "TURN_LEFT";
+		case  TURN_LEFT_PLAYER_0: return "TURN_LEFT_PLAYER_0";
+		case  TURN_LEFT_PLAYER_1: return "TURN_LEFT_PLAYER_1";
+		case  TURN_LEFT_PLAYER_2: return "TURN_LEFT_PLAYER_2";
+		case  TURN_LEFT_PLAYER_3: return "TURN_LEFT_PLAYER_3";
+		case  TURN_RIGHT: return "TURN_RIGHT";
+		case  TURN_RIGHT_PLAYER_0: return "TURN_RIGHT_PLAYER_0";
+		case  TURN_RIGHT_PLAYER_1: return "TURN_RIGHT_PLAYER_1";
+		case  TURN_RIGHT_PLAYER_2: return "TURN_RIGHT_PLAYER_2";
+		case  TURN_RIGHT_PLAYER_3: return "TURN_RIGHT_PLAYER_3";
+		case  STEER_STRAIGHT: return "STEER_STRAIGHT";
+		case  STEER_STRAIGHT_PLAYER_0: return "STEER_STRAIGHT_PLAYER_0";
+		case  STEER_STRAIGHT_PLAYER_1: return "STEER_STRAIGHT_PLAYER_1";
+		case  STEER_STRAIGHT_PLAYER_2: return "STEER_STRAIGHT_PLAYER_2";
+		case  STEER_STRAIGHT_PLAYER_3: return "STEER_STRAIGHT_PLAYER_3";
+		case  NO_ACCELERATE: return "NO_ACCELERATE";
+		case  NO_ACCELERATE_PLAYER_0: return "NO_ACCELERATE_PLAYER_0";
+		case  NO_ACCELERATE_PLAYER_1: return "NO_ACCELERATE_PLAYER_1";
+		case  NO_ACCELERATE_PLAYER_2: return "NO_ACCELERATE_PLAYER_2";
+		case  NO_ACCELERATE_PLAYER_3: return "NO_ACCELERATE_PLAYER_3";
+		}
+		return null;
 	}
 }

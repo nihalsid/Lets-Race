@@ -1,6 +1,5 @@
 package com.letsrace.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.letsrace.game.car.FRCarHandler;
@@ -27,7 +26,7 @@ public class FRGameWorld {
 	
 	public void update(float delta) {
 		carHandler.update(delta);
-		physicalWorld.step(Gdx.graphics.getDeltaTime(), 6, 2);
+		physicalWorld.step(1/60f, 6, 2);
 		physicalWorld.clearForces();
 	}
 	

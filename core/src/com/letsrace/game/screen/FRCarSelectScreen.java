@@ -19,21 +19,26 @@ public class FRCarSelectScreen extends ScreenAdapter {
 		gameRef = game;
 		gameRef.stage.clear();
 		Gdx.input.setInputProcessor(gameRef.stage);
+		
 		Image image = new Image(gameRef.skin.getDrawable("background"));
 		image.setWidth(Gdx.graphics.getWidth());
 		image.setHeight(Gdx.graphics.getHeight());
-		Image name = new Image(gameRef.skin.getDrawable("car-selection-name"));
+		
+		Image name = new Image(gameRef.skin.getDrawable("car-selection-car"));
 		name.setWidth(400*FRConstants.GUI_SCALE_WIDTH);
 		name.setHeight(50*FRConstants.GUI_SCALE_WIDTH);
 		name.setPosition(36*FRConstants.GUI_SCALE_WIDTH, (FRConstants.GUI_HIEGHT-30-50)*FRConstants.GUI_SCALE_WIDTH);
+		
 		Image character = new Image(gameRef.skin.getDrawable("car-selection-char"));
 		character.setWidth(230*FRConstants.GUI_SCALE_WIDTH);
 		character.setHeight(250*FRConstants.GUI_SCALE_WIDTH);
 		character.setPosition(36*FRConstants.GUI_SCALE_WIDTH, (FRConstants.GUI_HIEGHT-96-250)*FRConstants.GUI_SCALE_WIDTH);
+		
 		Image stats = new Image(gameRef.skin.getDrawable("car-selection-stats"));
 		stats.setWidth(150*FRConstants.GUI_SCALE_WIDTH);
 		stats.setHeight(250*FRConstants.GUI_SCALE_WIDTH);
 		stats.setPosition(286*FRConstants.GUI_SCALE_WIDTH, (FRConstants.GUI_HIEGHT-96-250)*FRConstants.GUI_SCALE_WIDTH);
+		
 		Image car = new Image(gameRef.skin.getDrawable("car-selection-car"));
 		car.setWidth(400*FRConstants.GUI_SCALE_WIDTH);
 		car.setHeight(400*FRConstants.GUI_SCALE_WIDTH);
@@ -41,7 +46,6 @@ public class FRCarSelectScreen extends ScreenAdapter {
 		car.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				super.clicked(event, x, y);
 				byte[] msg = new byte[1];
 				if (gameRef.myPlayerNo == 0)
 					msg[0] = FRMessageCodes.SELECTED_CAR_0;
@@ -51,6 +55,7 @@ public class FRCarSelectScreen extends ScreenAdapter {
 				gameRef.moveToScreen(GameState.WAIT);
 			}
 		});
+		
 		gameRef.stage.addActor(image);
 		gameRef.stage.addActor(name);
 		gameRef.stage.addActor(character);
@@ -66,6 +71,7 @@ public class FRCarSelectScreen extends ScreenAdapter {
 
 	@Override
 	public void render(float delta) {
+		gameRef.client.update();
 		GL20 gl = Gdx.gl;
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		gameRef.stage.draw();

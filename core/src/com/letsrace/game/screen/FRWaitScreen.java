@@ -38,6 +38,7 @@ public class FRWaitScreen extends ScreenAdapter{
 	
 	@Override
 	public void render(float delta) {
+		gameRef.client.update();
 		GL20 gl = Gdx.gl;
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		gameRef.stage.act(delta);

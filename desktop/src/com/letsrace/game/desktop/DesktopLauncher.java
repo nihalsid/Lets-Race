@@ -11,11 +11,13 @@ import com.letsrace.game.FRConstants.GameState;
 import com.letsrace.game.LetsRace;
 import com.letsrace.game.network.FRGoogleServices;
 import com.letsrace.game.network.FRMessageListener;
+import com.letsrace.game.network.Message;
 import com.letsrace.game.screen.FRMultiplayerMenuScreen;
 
 public class DesktopLauncher implements FRGoogleServices {
 	public LetsRace game;
-
+	FRMessageHandler messageHandler;
+	
 	public static void main(String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 480;
@@ -32,51 +34,66 @@ public class DesktopLauncher implements FRGoogleServices {
 
 	@Override
 	public void startQuickGame() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public String getMyId() {
-		// TODO Auto-generated method stub
-		return null;
+		return "MastBanda";
 	}
 
 	@Override
 	public ArrayList<String> getParticipantIds() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<String> p = new ArrayList<String>();
+		p.add(getMyId());
+		return p;
 	}
 
 	@Override
 	public void setServerListener(FRMessageListener listener) {
-		// TODO Auto-generated method stub
-
+		messageHandler.setServerMessageListener(listener);
 	}
 
 	@Override
 	public void setClientListener(FRMessageListener listener) {
-		// TODO Auto-generated method stub
-
+		messageHandler.setClientMessageListener(listener);
 	}
 
-	@Override
 	public void sendReliableMessage(byte[] message, String participantID) {
-		// TODO Auto-generated method stub
-
+		triggerMessageRecieveWithConstantDelay(message);
 	}
 
-	@Override
 	public void broadcastMessage(byte[] message) {
-		// TODO Auto-generated method stub
-
+		triggerMessageRecieveWithVariableDelay(message);
 	}
 
 	@Override
 	public void broadcastReliableMessage(byte[] message) {
-		// TODO Auto-generated method stub
-
+		triggerMessageRecieveWithConstantDelay(message);
 	}
+	
+	public void broadcastReliableExceptPlayer(byte[] message){
+		
+	}
+	public void triggerMessageRecieveWithVariableDelay(final byte[] message) {
+		Timer.schedule(new Task() {
+			@Override
+			public void run() {
+				messageHandler.onRealTimeMessageReceived(new Message(
+						message,getMyId()));
+			}
+		}, (float)(0.2f+Math.random()*0.1f));
+	}
+	public void triggerMessageRecieveWithConstantDelay(final byte[] message) {
+		Timer.schedule(new Task() {
+			@Override
+			public void run() {
+				messageHandler.onRealTimeMessageReceived(new Message(
+						message,getMyId()));
+			}
+		}, (float)(0.2f+Math.random()*0));
+	}
+
 
 	@Override
 	public boolean isSignedIn() {
@@ -96,6 +113,11 @@ public class DesktopLauncher implements FRGoogleServices {
 		};
 		Timer.schedule(action, 4);
 		return false;
+	}
+
+	@Override
+	public void setupSinglePlayerVars() {
+		messageHandler=new FRMessageHandler();
 	}
 
 }

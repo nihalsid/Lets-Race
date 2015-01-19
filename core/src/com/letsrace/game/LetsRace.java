@@ -38,8 +38,7 @@ public class LetsRace extends Game {
 	public HashMap<String, Integer> playerNumber;
 	public int myPlayerNo;
 	public FRGameClient client;
-	public boolean multiplayer;
-	
+	public FRGameServer server;
 	
 	public LetsRace(FRGoogleServices services) {
 		googleServices = services;
@@ -52,8 +51,9 @@ public class LetsRace extends Game {
 		Arrays.sort(participants);
 		if (participants[0] == googleServices.getMyId()) {
 			Gdx.app.log(FRConstants.TAG, "I am the server");
-			FRGameServer server = new FRGameServer(this, participants);
+			server = new FRGameServer(this, participants);
 			googleServices.setServerListener(server);
+			new Thread(server).start();
 		}
 		int ctr = 0;
 		for (String s : participants) {
@@ -94,7 +94,7 @@ public class LetsRace extends Game {
 		switch (screen) {
 		case GAME_SCREEN:
 			gameState = GameState.GAME_SCREEN;
-			setScreen(new FRGameScreen(this, multiplayer));
+			setScreen(new FRGameScreen(this));
 			break;
 		case MENU:
 			gameState = GameState.MENU;
@@ -127,5 +127,10 @@ public class LetsRace extends Game {
 		default:
 			break;
 		}
+	}
+
+	public void startSinglePlayerGame() {
+		googleServices.setupSinglePlayerVars();
+		decideOnServerAndStart();
 	}
 }

@@ -31,8 +31,7 @@ public class FRMenuScreen extends ScreenAdapter {
 		singleplayer.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				gameRef.multiplayer = false;
-				gameRef.moveToScreen(GameState.GAME_SCREEN);
+				gameRef.startSinglePlayerGame();
 			}
 		});
 		
@@ -41,7 +40,6 @@ public class FRMenuScreen extends ScreenAdapter {
 		multiplayer.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				gameRef.multiplayer = true;
 				gameRef.moveToScreen(GameState.MULTIPLAYER_MENU);
 			}
 		});

@@ -21,15 +21,18 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.letsrace.game.FRConstants;
 import com.letsrace.game.FRGameWorld;
 import com.letsrace.game.LetsRace;
-import com.letsrace.game.Message;
 import com.letsrace.game.car.Car;
+import com.letsrace.game.car.Car.Accel;
+import com.letsrace.game.car.Car.Steer;
 
-public class FRGameServer implements FRMessageListener {
-	FRGameWorld gameWorld;
+public class FRGameServer implements FRMessageListener, Runnable {
+	public FRGameWorld gameWorld;
 	LetsRace gameRef;
 	HashMap<String, FRPlayerData> sessionData;
 	FRQueueHandler queueHandler;
-	
+	boolean running = true;
+	byte packetNumber = -128;
+
 	public FRGameServer(LetsRace game, String[] participants) {
 		Gdx.app.log(FRConstants.TAG, "FRGameServer(): Constructor");
 		gameRef = game;
@@ -39,9 +42,15 @@ public class FRGameServer implements FRMessageListener {
 		for (String s : participants)
 			sessionData.put(s, new FRPlayerData());
 	}
-	
+
+	private void relayMessage(byte m, String pid) {
+		byte[] msg = new byte[1];
+		msg[0] = FRMessageCodes.convertToCorrespondingPlayerMessageCode(m,
+				gameRef.playerNumber.get(pid).intValue());
+		gameRef.googleServices.broadcastReliableExceptPlayer(msg);
+	}
+
 	public void processMessage(byte[] buffer, String senderParticipantId){
-		byte msg[];
 		switch (buffer[0]) {
 		case PING_DETECT_RES:
 			sessionData.get(senderParticipantId).ping = (int) (System
@@ -50,17 +59,30 @@ public class FRGameServer implements FRMessageListener {
 					+ sessionData.get(senderParticipantId).ping);
 			break;
 		case ACCEL_DOWN:
+			gameWorld.carHandler.cars.get(gameRef.playerNumber.get(senderParticipantId)).accelerate = Accel.BRAKE;
+			relayMessage(buffer[0], senderParticipantId);
+			break;
 		case ACCEL_UP:
+			System.out.println("SERVER:: ACCEL_UP@ "+System.currentTimeMillis());
+			gameWorld.carHandler.cars.get(gameRef.playerNumber.get(senderParticipantId)).accelerate = Accel.ACCELERATE;
+			relayMessage(buffer[0], senderParticipantId);
+			break;
 		case NO_ACCELERATE:
+			System.out.println("SERVER:: ACCEL_NONE@ "+System.currentTimeMillis());
+			gameWorld.carHandler.cars.get(gameRef.playerNumber.get(senderParticipantId)).accelerate = Accel.NONE;
+			relayMessage(buffer[0], senderParticipantId);
+			break;
 		case TURN_LEFT:
+			gameWorld.carHandler.cars.get(gameRef.playerNumber.get(senderParticipantId)).steer = Steer.LEFT;
+			relayMessage(buffer[0], senderParticipantId);
+			break;
 		case TURN_RIGHT:
+			gameWorld.carHandler.cars.get(gameRef.playerNumber.get(senderParticipantId)).steer = Steer.RIGHT;
+			relayMessage(buffer[0], senderParticipantId);
+			break;
 		case STEER_STRAIGHT:
-			msg = new byte[1];
-			msg[0] = FRMessageCodes.convertToCorrespondingPlayerMessageCode(
-					buffer[0], gameRef.playerNumber.get(senderParticipantId)
-							.intValue());
-			Gdx.app.log(FRConstants.TAG, "FRGameServer(): Relaying - " + msg[0]);
-			gameRef.googleServices.broadcastReliableMessage(msg);
+			gameWorld.carHandler.cars.get(gameRef.playerNumber.get(senderParticipantId)).steer = Steer.NONE;
+			relayMessage(buffer[0], senderParticipantId);
 			break;
 		case SELECTED_CAR_0:
 		case SELECTED_CAR_1:
@@ -72,28 +94,28 @@ public class FRGameServer implements FRMessageListener {
 			checkCarAvailabilityAndReply(buffer[0], senderParticipantId);
 			if (isAllPickConfirmed()) {
 				measurePing();
-				msg = new byte[1];
-				msg[0] = FRMessageCodes.PROCEED_TO_GAME_SCREEN;
-				Gdx.app.log(FRConstants.TAG, "FRGameServer(): Proceed to gameScreen");
-				gameRef.googleServices.broadcastReliableMessage(msg);
 				Timer.schedule(new Task() {
 					@Override
 					public void run() {
-						FRGameServer.this.gameRef.googleServices.broadcastMessage(generateSyncPacket());
+						byte[] msg = new byte[1];
+						msg[0] = FRMessageCodes.PROCEED_TO_GAME_SCREEN;
+						Gdx.app.log(FRConstants.TAG, "FRGameServer(): Proceed to gameScreen");
+						gameRef.googleServices.broadcastReliableMessage(msg);
 					}
-				}, 3f, 1f / 100);
+				},1.5f);
 				Timer.schedule(new Task() {
 					@Override
 					public void run() {
-						FRGameServer.this.gameWorld.update(1f/30);
+						FRGameServer.this.gameWorld.update(1f/FRConstants.SYNC_PACKETS_PER_SEC);
+//						FRGameServer.this.gameRef.googleServices.broadcastMessage(generateSyncPacket());
 					}
-				}, 3f, Gdx.graphics.getDeltaTime());
+				}, FRConstants.SYNC_PACKETS_START_DELAY, 1f/FRConstants.SYNC_PACKETS_PER_SEC);
 
 			}
 			break;
 		}
 	}
-	
+
 	@Override
 	public void onMessageRecieved(byte[] buffer, String senderParticipantId) {
 		Message msg = new Message(buffer, senderParticipantId);
@@ -142,8 +164,9 @@ public class FRGameServer implements FRMessageListener {
 
 	public byte[] generateSyncPacket() {
 		int ctr = 0;
-		byte[] message = new byte[1 + gameWorld.carHandler.cars.size() * 20];
+		byte[] message = new byte[1 + 1 + gameWorld.carHandler.cars.size() * 20];
 		message[ctr++] = FRMessageCodes.RESYNC_HEAD;
+		message[ctr++] = packetNumber++;
 		for (int j = 0; j < gameWorld.carHandler.cars.size(); j++) {
 			Car c = gameWorld.carHandler.cars.get(j);
 			byte[] posX = ByteBuffer.allocate(4)
@@ -168,6 +191,16 @@ public class FRGameServer implements FRMessageListener {
 				message[ctr++] = cSpeed[i];
 		}
 		return message;
+	}
+
+	@Override
+	public void run() {
+		Message msg;
+		while (running) {
+			if ((msg = queueHandler.readQueue()) != null) {
+				processMessage(msg.msg, msg.id);
+			}
+		}
 	}
 
 }

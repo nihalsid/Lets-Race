@@ -7,7 +7,10 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.database.CharArrayBuffer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
@@ -22,10 +25,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.GamesStatusCodes;
+import com.google.android.gms.games.Player;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
 import com.google.android.gms.games.multiplayer.Participant;
+import com.google.android.gms.games.multiplayer.ParticipantResult;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
@@ -632,7 +637,7 @@ public class AndroidLauncher extends AndroidApplication implements
 		}
 	}
 
-	public void triggerMessageRecieveWithDelay(final byte[] message){
+	public void triggerMessageRecieveWithDelay(final byte[] message) {
 		Timer.schedule(new Task() {
 			@Override
 			public void run() {
@@ -641,7 +646,7 @@ public class AndroidLauncher extends AndroidApplication implements
 			}
 		}, 0.1f);
 	}
-	
+
 	@Override
 	public void setServerListener(FRMessageListener listener) {
 		messageHandler.setServerMessageListener(listener);
@@ -655,5 +660,217 @@ public class AndroidLauncher extends AndroidApplication implements
 	@Override
 	public boolean isSignedIn() {
 		return mGoogleApiClient != null && mGoogleApiClient.isConnected();
+	}
+
+	@Override
+	public void setupSinglePlayerVars() {
+		room = new SinglePlayerRoom();
+		mMyId = room.getParticipantIds().get(0);
+	}
+
+	@Override
+	public void broadcastReliableExceptPlayer(byte[] message) {
+		// TODO Auto-generated method stub
+		
+	}
+}
+
+class SinglePlayerRoom implements Room {
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Room freeze() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isDataValid() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public ArrayList<Participant> getParticipants() {
+		ArrayList<Participant> p = new ArrayList<Participant>();
+		p.add(new DummyParticipant());
+		return p;
+	}
+
+	@Override
+	public Bundle getAutoMatchCriteria() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getAutoMatchWaitEstimateSeconds() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public long getCreationTimestamp() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getCreatorId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void getDescription(CharArrayBuffer arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Participant getParticipant(String arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getParticipantId(String arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<String> getParticipantIds() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getParticipantStatus(String arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getRoomId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getStatus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getVariant() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}
+
+class DummyParticipant implements Participant {
+	@Override
+	public boolean isDataValid() {
+		return false;
+	}
+
+	@Override
+	public Participant freeze() {
+		return null;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public String jX() {
+		return null;
+	}
+
+	@Override
+	public boolean isConnectedToRoom() {
+		return true;
+	}
+
+	@Override
+	public int getStatus() {
+		return 0;
+	}
+
+	@Override
+	public ParticipantResult getResult() {
+		return null;
+	}
+
+	@Override
+	public Player getPlayer() {
+		return null;
+	}
+
+	@Override
+	public String getParticipantId() {
+		return "MastBanda";
+	}
+
+	@Override
+	@Deprecated
+	public String getIconImageUrl() {
+		return null;
+	}
+
+	@Override
+	public Uri getIconImageUri() {
+		return null;
+	}
+
+	@Override
+	@Deprecated
+	public String getHiResImageUrl() {
+		return null;
+	}
+
+	@Override
+	public Uri getHiResImageUri() {
+		return null;
+	}
+
+	@Override
+	public void getDisplayName(CharArrayBuffer arg0) {
+	}
+
+	@Override
+	public String getDisplayName() {
+		return "MastBanda";
+	}
+
+	@Override
+	public int getCapabilities() {
+		return 0;
 	}
 }

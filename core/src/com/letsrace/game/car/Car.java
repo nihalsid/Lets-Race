@@ -9,16 +9,19 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.letsrace.game.FRConstants;
 import com.letsrace.game.car.Wheel.WheelType;
 
 public class Car {
 	public Body body;
-	public float width, length, angle, maxSteerAngle, maxSpeed, maxRevSpeed, power;
+	public float width, length, angle, maxSteerAngle, maxSpeed, maxRevSpeed,
+			power;
 	public float wheelAngle;
 	public Steer steer;
 	public Accel accelerate;
 	public List<Wheel> wheels;
 	Vector2 origin;
+//	private FRInterpolationModel interpolator;
 
 	public enum Steer {
 		NONE, LEFT, RIGHT
@@ -42,6 +45,7 @@ public class Car {
 		this.maxRevSpeed = maxSpeed / 2;
 		this.power = power;
 		this.wheelAngle = 0;
+//		this.interpolator = new FRInterpolationModel();
 		BodyEditorLoader loader = new BodyEditorLoader(
 				Gdx.files.internal(jsonFilePrefix + "-normal.json"));
 		// init body
@@ -113,8 +117,8 @@ public class Car {
 		float len = velocity.len();
 		return (len / 1000) * 3600;
 	}
-	
-	public float getBodyAngle(){
+
+	public float getBodyAngle() {
 		return this.body.getAngle();
 	}
 
@@ -130,6 +134,12 @@ public class Car {
 	}
 
 	public void update(float deltaTime) {
+		Vector2 interposition;
+//		if ((interposition = interpolator.getPosition(deltaTime)) != null) {
+//			this.body.setTransform(interposition.x, interposition.y,
+//					interpolator.getAngle());
+//		}
+
 		// 1. KILL SIDEWAYS VELOCITY
 
 		for (Wheel wheel : wheels) {
@@ -205,4 +215,76 @@ public class Car {
 		this.body.setTransform(posX, posY, cBodyAngle);
 	}
 
+//	public void adjustTransformTo(float posX, float posY, float cBodyAngle) {
+//		interpolator.setupModel(this.body.getPosition().x,
+//				this.body.getPosition().y, posX, posY, this.body.getAngle(),
+//				cBodyAngle);
+//	}
+
 }
+
+//class FRInterpolationModel {
+//
+//	private float slope = 0f;
+//	private float a, b;
+//	private float m, n;
+//	private boolean horizantalSteps;
+//	private float scaledTimeFraction;
+//	private float timeElapsed;
+//	private float ith, fth;
+//	private boolean initialized = false;
+//
+//	void setupModel(float initX, float initY, float finX, float finY,
+//			float initAngle, float finAngle) {
+//		m = initX;
+//		n = initY;
+//		a = finX;
+//		b = finY;
+//		ith = initAngle;
+//		fth = finAngle;
+//		timeElapsed = 0;
+//		if (Math.abs(a - m) > Math.abs(b - n)) {
+//			horizantalSteps = true;
+//			if (a - m == 0)
+//				return;
+//			else
+//				slope = ((float) b - n) / (a - m);
+//			scaledTimeFraction = (a - m) * FRConstants.SYNC_PACKETS_PER_SEC;
+//		} else {
+//			horizantalSteps = false;
+//			if (b - n == 0)
+//				return;
+//			else
+//				slope = ((float) a - m) / (b - n);
+//			scaledTimeFraction = (b - n) * FRConstants.SYNC_PACKETS_PER_SEC;
+//		}
+//		initialized = true;
+//	}
+//
+//	public float getAngle() {
+//		return (fth - ith) * timeElapsed * FRConstants.SYNC_PACKETS_PER_SEC
+//				+ ith;
+//	}
+//
+//	Vector2 getPosition(float delta) {
+//		timeElapsed+= delta;
+//		
+//		if (!initialized ) {
+//			return null;
+//		}
+//		if (timeElapsed > (1f / FRConstants.SYNC_PACKETS_PER_SEC)){
+//			timeElapsed = 1f / FRConstants.SYNC_PACKETS_PER_SEC;
+//			initialized = false;
+//		}
+//		float x, y;
+//		if (horizantalSteps) {
+//			x = scaledTimeFraction * timeElapsed + m;
+//			y = (x - m) * slope + n;
+//		} else {
+//			y = scaledTimeFraction * timeElapsed + n;
+//			x = (y - n) * slope + m;
+//		}
+//		return new Vector2(x, y);
+//	}
+//
+//}
