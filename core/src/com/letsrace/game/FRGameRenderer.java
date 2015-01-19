@@ -42,6 +42,6 @@ public class FRGameRenderer {
 		Matrix4 debugMat = new Matrix4(cam.combined);
 		debugMat.scale(PIXELS_PER_UNIT, PIXELS_PER_UNIT, 1f);
 		debugRenderer.render(worldRef.physicalWorld, debugMat);
-		debugRenderer.render(worldRef2.physicalWorld, debugMat);
+		//debugRenderer.render(worldRef2.physicalWorld, debugMat);
 	}
 }

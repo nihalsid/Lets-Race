@@ -75,6 +75,7 @@ public class DesktopLauncher implements FRGoogleServices {
 	public void broadcastReliableExceptPlayer(byte[] message){
 		
 	}
+	private static final float FIXED_DELAY = 0.35f;
 	public void triggerMessageRecieveWithVariableDelay(final byte[] message) {
 		Timer.schedule(new Task() {
 			@Override
@@ -82,7 +83,7 @@ public class DesktopLauncher implements FRGoogleServices {
 				messageHandler.onRealTimeMessageReceived(new Message(
 						message,getMyId()));
 			}
-		}, (float)(0.2f+Math.random()*0.1f));
+		}, (float)(FIXED_DELAY+0.05*Math.random()));
 	}
 	public void triggerMessageRecieveWithConstantDelay(final byte[] message) {
 		Timer.schedule(new Task() {
@@ -91,7 +92,7 @@ public class DesktopLauncher implements FRGoogleServices {
 				messageHandler.onRealTimeMessageReceived(new Message(
 						message,getMyId()));
 			}
-		}, (float)(0.2f+Math.random()*0));
+		}, (float)(FIXED_DELAY));
 	}
 
 
