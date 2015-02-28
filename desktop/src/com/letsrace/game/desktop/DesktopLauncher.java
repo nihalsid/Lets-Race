@@ -77,13 +77,15 @@ public class DesktopLauncher implements FRGoogleServices {
 	}
 	private static final float FIXED_DELAY = 0.35f;
 	public void triggerMessageRecieveWithVariableDelay(final byte[] message) {
+		if (Math.random()<0.2) //packet loss
+			return;
 		Timer.schedule(new Task() {
 			@Override
 			public void run() {
 				messageHandler.onRealTimeMessageReceived(new Message(
 						message,getMyId()));
 			}
-		}, (float)(FIXED_DELAY+0.05*Math.random()));
+		}, (float)(FIXED_DELAY+0.1*Math.random()));
 	}
 	public void triggerMessageRecieveWithConstantDelay(final byte[] message) {
 		Timer.schedule(new Task() {

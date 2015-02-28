@@ -334,7 +334,6 @@ public class AndroidLauncher extends AndroidApplication implements
 		if (keyCode == KeyEvent.KEYCODE_BACK
 				&& game.gameState == GameState.GAME_SCREEN) {
 			leaveRoom();
-			return true;
 		}
 		return super.onKeyDown(keyCode, e);
 	}
@@ -342,11 +341,11 @@ public class AndroidLauncher extends AndroidApplication implements
 	// Leave the room.
 	void leaveRoom() {
 		Log.d(TAG, "Leaving room.");
-		if (room != null) {
+		if (room != null && !(room instanceof SinglePlayerRoom)) {
 			Games.RealTimeMultiplayer.leave(mGoogleApiClient, this,
 					room.getRoomId());
-			room = null;
 		}
+		room = null;
 	}
 
 	// Show the waiting room UI to track the progress of other players as they
@@ -606,7 +605,6 @@ public class AndroidLauncher extends AndroidApplication implements
 
 	public void sendReliableMessage(byte[] message, String participantID) {
 		if (participantID.equals(mMyId)) {
-			Gdx.app.log(TAG, "Manual trigger onRealTimeMessageRecieved()");
 			triggerMessageRecieveWithDelay(message);
 		} else
 			Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,
@@ -616,7 +614,6 @@ public class AndroidLauncher extends AndroidApplication implements
 	public void broadcastMessage(byte[] message) {
 		for (Participant p : mParticipants) {
 			if (p.getParticipantId().equals(mMyId)) {
-				Gdx.app.log(TAG, "Manual trigger onRealTimeMessageRecieved()");
 				triggerMessageRecieveWithDelay(message);
 			} else
 				Games.RealTimeMultiplayer.sendUnreliableMessage(
@@ -629,7 +626,6 @@ public class AndroidLauncher extends AndroidApplication implements
 	public void broadcastReliableMessage(byte[] message) {
 		for (Participant p : mParticipants) {
 			if (p.getParticipantId().equals(mMyId)) {
-				Gdx.app.log(TAG, "Manual trigger onRealTimeMessageRecieved()");
 				triggerMessageRecieveWithDelay(message);
 			} else
 				Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient,
@@ -665,6 +661,7 @@ public class AndroidLauncher extends AndroidApplication implements
 	@Override
 	public void setupSinglePlayerVars() {
 		room = new SinglePlayerRoom();
+		mParticipants = room.getParticipants();
 		mMyId = room.getParticipantIds().get(0);
 	}
 
@@ -758,8 +755,11 @@ class SinglePlayerRoom implements Room {
 
 	@Override
 	public ArrayList<String> getParticipantIds() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<String> participantIds = new ArrayList<String>();
+		for (Participant p : getParticipants()){
+			participantIds.add(p.getParticipantId());
+		}
+		return participantIds;
 	}
 
 	@Override

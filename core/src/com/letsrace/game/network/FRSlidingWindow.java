@@ -23,7 +23,6 @@ public class FRSlidingWindow {
 	int noOfPacketsBuffered = 0;
 	
 	public Message get() {
-		System.out.println("PB:"+noOfPacketsBuffered);
 		Message retval = valid[ticker] ? messages[ticker] : null;
 		noOfPacketsBuffered = noOfPacketsBuffered - ((retval==null)?0:1);
 		valid[ticker] = false;
