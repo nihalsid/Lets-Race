@@ -9,7 +9,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.letsrace.game.FRConstants;
 import com.letsrace.game.car.Wheel.WheelType;
 
 public class Car {
@@ -36,7 +35,7 @@ public class Car {
 			String jsonFilePrefix) {
 		super();
 		this.steer = Steer.NONE;
-		this.accelerate = Accel.NONE;
+		this.accelerate = Accel.ACCELERATE;
 		this.width = width;
 		this.length = length;
 		this.angle = angle;
@@ -134,12 +133,6 @@ public class Car {
 	}
 
 	public void update(float deltaTime) {
-		Vector2 interposition;
-//		if ((interposition = interpolator.getPosition(deltaTime)) != null) {
-//			this.body.setTransform(interposition.x, interposition.y,
-//					interpolator.getAngle());
-//		}
-
 		// 1. KILL SIDEWAYS VELOCITY
 
 		for (Wheel wheel : wheels) {

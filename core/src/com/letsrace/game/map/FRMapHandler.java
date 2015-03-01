@@ -17,7 +17,7 @@ public class FRMapHandler{
 	public TiledMap tiledMap;
 	public World physicalWorldRef;
 	public Vector2[] initialPositionMarkers;
-	public FRAngleMonitor angleMon=new FRAngleMonitor(0.50f);
+	public FRAngleMonitor angleMon=new FRAngleMonitor(0.75f);
 	public Body mainCarBody;
 	
 	public FRMapHandler(World physicalWorld){

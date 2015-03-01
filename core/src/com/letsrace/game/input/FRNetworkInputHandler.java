@@ -11,7 +11,6 @@ import com.letsrace.game.network.FRMessageCodes;
 public class FRNetworkInputHandler extends FRInputAdapter{
 	public FRGoogleServices networkServices;
 	public String serverID;
-	private Steer lastMessage=Steer.NONE;
 	private Car myCar;
 	
 	public FRNetworkInputHandler(FRGoogleServices networkServices, String server, Car car){
@@ -22,15 +21,26 @@ public class FRNetworkInputHandler extends FRInputAdapter{
 	
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 		byte[] msg = new byte[1];
-		msg[0] = FRMessageCodes.ACCEL_UP;
+		if (screenX >Gdx.graphics.getWidth()*0.85&&screenY>Gdx.graphics.getHeight()*0.85){
+			msg[0] = FRMessageCodes.ACCEL_DOWN;
+		}
+		else if (screenX<Gdx.graphics.getWidth()/2){
+			msg[0] = FRMessageCodes.TURN_LEFT;
+		}
+		else if (screenX>Gdx.graphics.getWidth()/2){
+			msg[0] = FRMessageCodes.TURN_RIGHT;
+		}
 		networkServices.sendReliableMessage(msg, serverID);
 		return true;
 	}
 
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-		byte[] msg = new byte[1];
-		msg[0] = FRMessageCodes.NO_ACCELERATE;
-		networkServices.sendReliableMessage(msg, serverID);
+		byte[] msg1 = new byte[1];
+		msg1[0] = FRMessageCodes.STEER_STRAIGHT;
+		networkServices.sendReliableMessage(msg1, serverID);
+		byte[] msg2 = new byte[1];
+		msg2[0] = FRMessageCodes.ACCEL_UP;
+		networkServices.sendReliableMessage(msg2, serverID);
 		return true;
 	}
 	
@@ -62,32 +72,6 @@ public class FRNetworkInputHandler extends FRInputAdapter{
 		}
 		return false;
 	}
-	
-	public void handleAccelerometer(){
-		final float NOISE = 2f;
-		float x = Gdx.input.getAccelerometerX();
-		if(x==0.0)
-			return;
-		if (x>=NOISE && lastMessage!=Steer.RIGHT){
-			byte[] msg = new byte[1];
-			msg[0] = FRMessageCodes.TURN_RIGHT;
-			networkServices.sendReliableMessage(msg, serverID);
-			lastMessage=Steer.RIGHT;
-		}
-		if(x<=-NOISE&&lastMessage!=Steer.LEFT){
-			byte[] msg = new byte[1];
-			msg[0] = FRMessageCodes.TURN_LEFT;
-			networkServices.sendReliableMessage(msg, serverID);
-			lastMessage=Steer.LEFT;
-		}
-		if(x>-NOISE&&x<NOISE&&lastMessage!=Steer.NONE){
-			byte[] msg = new byte[1];
-			msg[0] = FRMessageCodes.STEER_STRAIGHT;
-			networkServices.sendReliableMessage(msg, serverID);
-			lastMessage=Steer.NONE;
-		}
-	}
-	
 	
 	public boolean keyUp(int keycode) {
 		if (keycode == Input.Keys.DPAD_UP) {
