@@ -20,6 +20,7 @@ public class FRGameRenderer {
 	SpriteBatch batch;
 	TiledMapRenderer tiledMapRenderer;
 	int carNumber;
+	Matrix4 debugMat;
 	
 	public FRGameRenderer(int myCarNumber, FRGameWorld world,FRGameWorld serverWorld, Batch batch){
 		worldRef = world;
@@ -31,6 +32,7 @@ public class FRGameRenderer {
 		cam.position.set(cam.viewportWidth/2f,cam.viewportHeight/2f,0);
 		debugRenderer=new Box2DDebugRenderer();
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(world.mapHandler.tiledMap, batch);
+		debugMat = new Matrix4(cam.combined);
 	}
 	
 	public void render(){
@@ -39,7 +41,7 @@ public class FRGameRenderer {
 		cam.position.set(worldRef.carHandler.cars.get(carNumber).getWorldPosition().x*PIXELS_PER_UNIT,worldRef.carHandler.cars.get(carNumber).getWorldPosition().y*PIXELS_PER_UNIT,0);
 		tiledMapRenderer.setView(cam);
 		tiledMapRenderer.render();
-		Matrix4 debugMat = new Matrix4(cam.combined);
+		debugMat.set(cam.combined);
 		debugMat.scale(PIXELS_PER_UNIT, PIXELS_PER_UNIT, 1f);
 		debugRenderer.render(worldRef.physicalWorld, debugMat);
 		//debugRenderer.render(worldRef2.physicalWorld, debugMat);

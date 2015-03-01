@@ -25,7 +25,6 @@ import com.letsrace.game.screen.FRMultiplayerMenuScreen;
 import com.letsrace.game.screen.FRSplashScreen;
 import com.letsrace.game.screen.FRWaitScreen;
 import com.letsrace.game.screen.FRWaitingForPlayerScreen;
-import com.letsrace.game.unused.FRAssets;
 
 public class LetsRace extends Game {
 	public GameState gameState;
@@ -76,7 +75,6 @@ public class LetsRace extends Game {
 		guicam = new OrthographicCamera();
 		batch = new SpriteBatch();
 		FRConstants.initializeDynamicConstants();
-		FRAssets.load();
 		moveToScreen(GameState.SPLASH);
 	}
 

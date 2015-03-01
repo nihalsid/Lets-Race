@@ -1,6 +1,5 @@
 package com.letsrace.game.network;
 
-import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -16,12 +15,8 @@ public class FRQueueHandler {
 	}
 
 	public Message readQueue() {
-		if (queue == null)
+		if (queue == null||queue.size()==0)
 			return null;
-		try {
-			return queue.remove();
-		} catch (NoSuchElementException exception) {
-			return null;
-		}
+		return queue.remove();
 	}
 }

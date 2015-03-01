@@ -673,7 +673,18 @@ public class AndroidLauncher extends AndroidApplication implements
 }
 
 class SinglePlayerRoom implements Room {
+	
+	ArrayList<Participant> p;
+	ArrayList<String> participantIds; 
 
+	public SinglePlayerRoom() {
+		p = new ArrayList<Participant>();
+		p.add(new DummyParticipant());
+		participantIds = new ArrayList<String>();
+		for (Participant p : getParticipants()){
+			participantIds.add(p.getParticipantId());
+		}
+	}
 	@Override
 	public int describeContents() {
 		// TODO Auto-generated method stub
@@ -700,8 +711,6 @@ class SinglePlayerRoom implements Room {
 
 	@Override
 	public ArrayList<Participant> getParticipants() {
-		ArrayList<Participant> p = new ArrayList<Participant>();
-		p.add(new DummyParticipant());
 		return p;
 	}
 
@@ -755,10 +764,6 @@ class SinglePlayerRoom implements Room {
 
 	@Override
 	public ArrayList<String> getParticipantIds() {
-		ArrayList<String> participantIds = new ArrayList<String>();
-		for (Participant p : getParticipants()){
-			participantIds.add(p.getParticipantId());
-		}
 		return participantIds;
 	}
 
